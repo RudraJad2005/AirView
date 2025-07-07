@@ -1,3 +1,7 @@
+import { DashboardClient } from '@/components/dashboard-client';
+import { getLocationsData } from '@/lib/data';
+
 export default function Home() {
-  return <></>;
+  const locations = getLocationsData();
+  return <DashboardClient locations={locations} />;
 }
