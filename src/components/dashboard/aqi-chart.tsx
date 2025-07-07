@@ -1,12 +1,24 @@
 "use client"
 
-import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis, Tooltip } from "recharts"
+import { Bar, BarChart, XAxis, YAxis } from "recharts"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
-import { ChartTooltipContent } from "@/components/ui/chart"
+import {
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+  type ChartConfig,
+} from "@/components/ui/chart"
 
 interface AqiChartProps {
   data: { date: string; aqi: number }[];
 }
+
+const chartConfig = {
+  aqi: {
+    label: "AQI",
+    color: "hsl(var(--primary))",
+  },
+} satisfies ChartConfig;
 
 export function AqiChart({ data }: AqiChartProps) {
   return (
@@ -18,8 +30,8 @@ export function AqiChart({ data }: AqiChartProps) {
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <ResponsiveContainer width="100%" height={300}>
-          <BarChart data={data}>
+        <ChartContainer config={chartConfig} className="h-[300px] w-full">
+          <BarChart accessibilityLayer data={data}>
             <XAxis
               dataKey="date"
               stroke="#888888"
@@ -34,13 +46,13 @@ export function AqiChart({ data }: AqiChartProps) {
               axisLine={false}
               tickFormatter={(value) => `${value}`}
             />
-            <Tooltip
+            <ChartTooltip
               cursor={{ fill: 'hsl(var(--muted))' }}
               content={<ChartTooltipContent />} 
             />
-            <Bar dataKey="aqi" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} />
+            <Bar dataKey="aqi" fill="var(--color-aqi)" radius={[4, 4, 0, 0]} />
           </BarChart>
-        </ResponsiveContainer>
+        </ChartContainer>
       </CardContent>
     </Card>
   )
