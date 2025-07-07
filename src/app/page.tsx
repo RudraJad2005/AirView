@@ -145,73 +145,32 @@ export default function LandingPage() {
                 </p>
               </div>
             </div>
-            <div className="mx-auto grid max-w-4xl gap-6 mt-12 sm:grid-cols-2 lg:grid-cols-3">
-              <Card className="bg-green-500/10 border-green-500/30">
-                <CardHeader>
-                  <CardTitle className="flex items-center justify-between">
-                    <span>Good</span>
-                    <Badge className="bg-green-500 text-white">0-50</Badge>
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-sm text-muted-foreground">Air quality is satisfactory, and air pollution poses little or no risk.</p>
-                </CardContent>
-              </Card>
-              <Card className="bg-yellow-500/10 border-yellow-500/30">
-                <CardHeader>
-                  <CardTitle className="flex items-center justify-between">
-                    <span>Moderate</span>
-                    <Badge className="bg-yellow-500 text-white">51-100</Badge>
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-sm text-muted-foreground">Air quality is acceptable. However, there may be a risk for some people.</p>
-                </CardContent>
-              </Card>
-              <Card className="bg-orange-500/10 border-orange-500/30">
-                <CardHeader>
-                  <CardTitle className="flex items-center justify-between">
-                    <span>Unhealthy (Sensitive)</span>
-                    <Badge className="bg-orange-500 text-white">101-150</Badge>
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-sm text-muted-foreground">Members of sensitive groups may experience health effects.</p>
-                </CardContent>
-              </Card>
-              <Card className="bg-red-500/10 border-red-500/30">
-                <CardHeader>
-                  <CardTitle className="flex items-center justify-between">
-                    <span>Unhealthy</span>
-                    <Badge className="bg-red-500 text-white">151-200</Badge>
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-sm text-muted-foreground">Some members of the general public may experience health effects.</p>
-                </CardContent>
-              </Card>
-              <Card className="bg-purple-500/10 border-purple-500/30">
-                <CardHeader>
-                  <CardTitle className="flex items-center justify-between">
-                    <span>Very Unhealthy</span>
-                    <Badge className="bg-purple-500 text-white">201-300</Badge>
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-sm text-muted-foreground">Health alert: The risk of health effects is increased for everyone.</p>
-                </CardContent>
-              </Card>
-              <Card className="bg-red-900/10 border-red-900/30">
-                <CardHeader>
-                  <CardTitle className="flex items-center justify-between">
-                    <span>Hazardous</span>
-                    <Badge className="bg-red-900 text-white">301+</Badge>
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-sm text-muted-foreground">Health warning of emergency conditions: everyone is more likely to be affected.</p>
-                </CardContent>
-              </Card>
+            <div className="mx-auto max-w-5xl mt-12">
+              <div className="flex rounded-t-lg overflow-hidden border-x border-t border-border text-xs sm:text-sm">
+                <div className="flex-1 py-2 px-1 text-center bg-green-500 text-white font-bold">Good</div>
+                <div className="flex-1 py-2 px-1 text-center bg-yellow-500 text-black font-bold">Moderate</div>
+                <div className="flex-1 py-2 px-1 text-center bg-orange-500 text-white font-bold">Unhealthy (Sensitive)</div>
+                <div className="flex-1 py-2 px-1 text-center bg-red-500 text-white font-bold">Unhealthy</div>
+                <div className="flex-1 py-2 px-1 text-center bg-purple-500 text-white font-bold">Very Unhealthy</div>
+                <div className="flex-1 py-2 px-1 text-center bg-red-900 text-white font-bold">Hazardous</div>
+              </div>
+              <div className="flex rounded-b-lg overflow-hidden text-sm font-mono border-x border-b border-border">
+                <div className="flex-1 p-2 text-center bg-card">0-50</div>
+                <div className="flex-1 p-2 text-center bg-card">51-100</div>
+                <div className="flex-1 p-2 text-center bg-card">101-150</div>
+                <div className="flex-1 p-2 text-center bg-card">151-200</div>
+                <div className="flex-1 p-2 text-center bg-card">201-300</div>
+                <div className="flex-1 p-2 text-center bg-card">301+</div>
+              </div>
+
+              <div className="mt-8 grid gap-x-8 gap-y-4 sm:grid-cols-2 text-sm text-muted-foreground">
+                <p><strong className="font-semibold text-green-400">Good (0-50):</strong> Air quality is satisfactory, and air pollution poses little or no risk.</p>
+                <p><strong className="font-semibold text-yellow-400">Moderate (51-100):</strong> Air quality is acceptable. However, there may be a risk for some people.</p>
+                <p><strong className="font-semibold text-orange-400">Unhealthy for Sensitive Groups (101-150):</strong> Members of sensitive groups may experience health effects.</p>
+                <p><strong className="font-semibold text-red-400">Unhealthy (151-200):</strong> Some members of the general public may experience health effects.</p>
+                <p><strong className="font-semibold text-purple-400">Very Unhealthy (201-300):</strong> Health alert: The risk of health effects is increased for everyone.</p>
+                <p><strong className="font-semibold text-rose-400">Hazardous (301+):</strong> Health warning of emergency conditions: everyone is more likely to be affected.</p>
+              </div>
             </div>
           </div>
         </section>
