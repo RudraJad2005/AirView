@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { Menu, LayoutGrid, MapPin } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
+import { Sheet, SheetContent, SheetTrigger, SheetTitle } from '@/components/ui/sheet';
 import { Logo } from '../logo';
 
 export function AppHeader() {
@@ -16,6 +16,7 @@ export function AppHeader() {
         </SheetTrigger>
         <SheetContent side="left" className="flex flex-col">
           <nav className="grid gap-2 text-lg font-medium">
+            <SheetTitle className="sr-only">Navigation Menu</SheetTitle>
             <Link href="/" className="flex items-center gap-2 text-lg font-semibold mb-4">
               <Logo />
               <span>BreatheEasy</span>
