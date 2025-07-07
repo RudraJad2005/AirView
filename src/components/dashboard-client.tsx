@@ -9,6 +9,7 @@ import { HealthAdviceModal } from '@/components/dashboard/health-advice-modal';
 import { Button } from '@/components/ui/button';
 import { HeartPulse } from 'lucide-react';
 import { PollutantInfoModal } from './dashboard/pollutant-info-modal';
+import { LatestNews } from './dashboard/latest-news';
 
 interface DashboardClientProps {
   locations: LocationData[];
@@ -18,13 +19,20 @@ export function DashboardClient({ locations }: DashboardClientProps) {
   const [selectedLocation, setSelectedLocation] = useState<LocationData>(locations[0]);
   const [healthAdviceModalOpen, setHealthAdviceModalOpen] = useState(false);
   const [pollutantInfoModalOpen, setPollutantInfoModalOpen] = useState(false);
+  const [pollutantInfoLocation, setPollutantInfoLocation] = useState<LocationData>(locations[0]);
+
 
   const handleSelectLocation = (location: LocationData) => {
     setSelectedLocation(location);
   };
 
+  const handlePollutantInfoClick = (location: LocationData) => {
+    setPollutantInfoLocation(location);
+    setPollutantInfoModalOpen(true);
+  };
+
   return (
-    <div className="flex-1 space-y-4">
+    <div className="flex-1 space-y-8">
       <div className="flex items-center justify-between space-y-2">
         <div>
           <h2 className="text-3xl font-bold tracking-tight">Dashboard</h2>
@@ -64,13 +72,16 @@ export function DashboardClient({ locations }: DashboardClientProps) {
               location={location}
               isSelected={selectedLocation.id === location.id}
               onSelect={() => handleSelectLocation(location)}
-              onPollutantInfoClick={() => setPollutantInfoModalOpen(true)}
+              onPollutantInfoClick={() => handlePollutantInfoClick(location)}
             />
           ))}
         </div>
       </div>
+
+      <LatestNews />
+
       <PollutantInfoModal 
-        location={selectedLocation}
+        location={pollutantInfoLocation}
         open={pollutantInfoModalOpen}
         onOpenChange={setPollutantInfoModalOpen}
       />

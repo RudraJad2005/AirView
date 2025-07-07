@@ -1,4 +1,4 @@
-import type { LocationData } from '@/types';
+import type { LocationData, NewsArticle } from '@/types';
 
 const locationsData: LocationData[] = [
   {
@@ -99,6 +99,40 @@ const locationsData: LocationData[] = [
   },
 ];
 
+const newsArticles: NewsArticle[] = [
+  {
+    id: 'news-1',
+    title: 'India Launches New Initiative to Combat Urban Air Pollution',
+    source: 'The Environmental Times',
+    publishedDate: '2 days ago',
+    imageUrl: 'https://placehold.co/600x400.png',
+    dataAiHint: 'city pollution',
+    link: '#',
+  },
+  {
+    id: 'news-2',
+    title: 'How High AQI Affects Respiratory Health: A Deep Dive',
+    source: 'Health & Wellness Weekly',
+    publishedDate: '3 days ago',
+    imageUrl: 'https://placehold.co/600x400.png',
+    dataAiHint: 'person mask',
+    link: '#',
+  },
+  {
+    id: 'news-3',
+    title: 'Technological Breakthroughs in Air Quality Monitoring',
+    source: 'Tech Today',
+    publishedDate: '5 days ago',
+    imageUrl: 'https://placehold.co/600x400.png',
+    dataAiHint: 'air sensor',
+    link: '#',
+  },
+];
+
 export const getLocationsData = (): LocationData[] => {
   return locationsData;
+};
+
+export const getNewsArticles = (): NewsArticle[] => {
+  return newsArticles;
 };
