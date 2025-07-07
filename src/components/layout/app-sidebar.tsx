@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { LayoutGrid, MapPin, Settings } from 'lucide-react';
+import { LayoutGrid, MapPin, Settings, BrainCircuit } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Logo } from '@/components/logo';
@@ -18,10 +18,17 @@ export function AppSidebar() {
           <nav className="grid items-start px-2 text-sm font-medium lg:px-4">
             <Link
               href="/dashboard"
-              className="flex items-center gap-3 rounded-lg bg-muted px-3 py-2 text-primary transition-all hover:text-primary"
+              className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary"
             >
               <LayoutGrid className="h-4 w-4" />
               Dashboard
+            </Link>
+            <Link
+              href="/dashboard/analytics"
+              className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary"
+            >
+              <BrainCircuit className="h-4 w-4" />
+              Analytics
             </Link>
             <Link
               href="#"
