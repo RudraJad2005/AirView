@@ -2,6 +2,7 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter }
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { LayoutGrid, BrainCircuit, ArrowRight } from "lucide-react";
+import { AqiCalendar } from "@/components/aqi-calendar";
 
 export default function HomePage() {
   const aqiLevels = [
@@ -96,6 +97,8 @@ export default function HomePage() {
           ))}
         </CardContent>
       </Card>
+
+      <AqiCalendar />
 
     </div>
   );
