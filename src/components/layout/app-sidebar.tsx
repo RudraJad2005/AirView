@@ -1,57 +1,41 @@
+'use client';
+
 import Link from 'next/link';
-import { LayoutGrid, MapPin, BrainCircuit, Home, Settings } from 'lucide-react';
-import { Logo } from '@/components/logo';
+import { usePathname } from 'next/navigation';
+import { LayoutGrid, BrainCircuit, Home, Settings, MapPin } from 'lucide-react';
+import { cn } from '@/lib/utils';
+
+const navItems = [
+  { href: '/', label: 'Home', icon: Home },
+  { href: '/dashboard', label: 'Dashboard', icon: LayoutGrid },
+  { href: '/analytics', label: 'Analytics', icon: BrainCircuit },
+  { href: '/settings/location', label: 'Locations', icon: MapPin },
+  { href: '/settings', label: 'Settings', icon: Settings },
+];
 
 export function AppSidebar() {
+  const pathname = usePathname();
+
   return (
-    <div className="hidden border-r bg-muted/40 md:block">
-      <div className="flex h-full max-h-screen flex-col gap-2">
-        <div className="flex h-14 items-center border-b px-4 lg:h-[60px] lg:px-6">
-          <Link href="/" className="flex items-center gap-2 font-semibold">
-            <Logo />
-            <span className="">BreatheEasy</span>
-          </Link>
-        </div>
-        <div className="flex-1">
-          <nav className="grid items-start px-2 text-sm font-medium lg:px-4">
+    <div className="fixed bottom-0 left-0 z-50 w-full border-t bg-background">
+      <nav className="grid h-16 grid-cols-5">
+        {navItems.map((item) => {
+          const isActive = pathname.startsWith(item.href) && (item.href !== '/' || pathname === '/');
+          return (
             <Link
-              href="/"
-              className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary"
+              key={item.label}
+              href={item.href}
+              className={cn(
+                'flex flex-col items-center justify-center gap-1 p-2 text-muted-foreground transition-colors hover:text-primary',
+                isActive && 'text-primary bg-muted/50'
+              )}
             >
-              <Home className="h-4 w-4" />
-              Home
+              <item.icon className="h-5 w-5" />
+              <span className="text-xs font-medium">{item.label}</span>
             </Link>
-            <Link
-              href="/dashboard"
-              className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary"
-            >
-              <LayoutGrid className="h-4 w-4" />
-              Dashboard
-            </Link>
-            <Link
-              href="/analytics"
-              className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary"
-            >
-              <BrainCircuit className="h-4 w-4" />
-              Analytics
-            </Link>
-            <Link
-              href="#"
-              className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary"
-            >
-              <MapPin className="h-4 w-4" />
-              Saved Locations
-            </Link>
-             <Link
-              href="/settings"
-              className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary"
-            >
-              <Settings className="h-4 w-4" />
-              Settings
-            </Link>
-          </nav>
-        </div>
-      </div>
+          );
+        })}
+      </nav>
     </div>
   );
 }
