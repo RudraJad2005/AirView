@@ -92,12 +92,12 @@ export function AqiCalendar() {
         </div>
       </CardHeader>
       <CardContent>
-        <div className="grid grid-cols-7 gap-2 text-center text-xs text-muted-foreground mb-2">
+        <div className="grid grid-cols-7 gap-1 text-center text-xs text-muted-foreground mb-2">
           {weekdays.map((day) => (
             <div key={day} className="font-semibold">{day}</div>
           ))}
         </div>
-        <div className="grid grid-cols-7 gap-2">
+        <div className="grid grid-cols-7 gap-1">
           {calendarDays.map((dayData, index) => {
             if (!dayData) {
               return <div key={`blank-${index}`} />;
@@ -108,12 +108,12 @@ export function AqiCalendar() {
               <div
                 key={dayData.day}
                 className={cn(
-                  'rounded-lg p-2 flex flex-col justify-center items-center text-center aspect-square',
+                  'rounded-lg p-1 flex flex-col justify-center items-center text-center aspect-square',
                   color
                 )}
               >
                 <div className="text-xs font-medium text-black/70">{format(dayDate, 'd MMM')}</div>
-                <div className="font-bold text-xl text-black">{dayData.aqi}</div>
+                <div className="font-bold text-lg text-black">{dayData.aqi}</div>
               </div>
             );
           })}
