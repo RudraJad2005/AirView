@@ -10,6 +10,7 @@ import { Button } from '@/components/ui/button';
 import { HeartPulse, Search } from 'lucide-react';
 import { PollutantInfoModal } from './dashboard/pollutant-info-modal';
 import { Input } from '@/components/ui/input';
+import { AqiHeatmap } from './dashboard/aqi-heatmap';
 
 interface DashboardClientProps {
   locations: LocationData[];
@@ -97,6 +98,8 @@ export function DashboardClient({ locations }: DashboardClientProps) {
           )}
         </div>
       </div>
+      
+      <AqiHeatmap locations={locations} />
 
       <PollutantInfoModal 
         location={pollutantInfoLocation}
