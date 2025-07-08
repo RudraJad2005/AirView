@@ -10,13 +10,3 @@ export type LocationData = {
   }[];
   historical: { date: string; aqi: number }[];
 };
-
-export type NewsArticle = {
-  id: string;
-  title: string;
-  source: string;
-  publishedDate: string;
-  imageUrl: string;
-  dataAiHint: string;
-  link: string;
-};
