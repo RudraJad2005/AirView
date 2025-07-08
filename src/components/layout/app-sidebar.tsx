@@ -48,7 +48,7 @@ export function AppSidebar() {
         </div>
         <div className="mt-auto p-4">
           <Card>
-            <CardContent className="p-2 md:p-4">
+            <CardContent className="p-4">
               <div className="flex items-center gap-4">
                 <Button variant="outline" size="icon" className="h-8 w-8">
                   <Settings className="h-4 w-4" />
