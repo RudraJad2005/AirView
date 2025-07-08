@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { getAqiInfo } from '@/lib/aqi-helpers';
@@ -19,11 +19,12 @@ const generateMockAqiData = (year: number, month: number): { day: number; aqi: n
 export function AqiCalendar() {
   // Set default to Jan 2025 to match the image
   const [currentDate, setCurrentDate] = useState(new Date('2025-01-01T12:00:00Z'));
+  const [aqiData, setAqiData] = useState<{ day: number; aqi: number }[]>([]);
 
-  const aqiData = useMemo(
-    () => generateMockAqiData(currentDate.getFullYear(), currentDate.getMonth()),
-    [currentDate]
-  );
+  useEffect(() => {
+    // Generate data only on the client-side to avoid hydration mismatch
+    setAqiData(generateMockAqiData(currentDate.getFullYear(), currentDate.getMonth()));
+  }, [currentDate]);
 
   const year = currentDate.getFullYear();
   const month = currentDate.getMonth();
