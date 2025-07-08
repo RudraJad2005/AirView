@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useCallback } from 'react';
-import dynamic from 'next/dynamic';
 import type { LocationData } from '@/types';
 import { getLocationsData } from '@/lib/data';
 import { AqiCard } from '@/components/dashboard/aqi-card';
@@ -12,18 +11,6 @@ import { Button } from '@/components/ui/button';
 import { HeartPulse, Search } from 'lucide-react';
 import { PollutantInfoModal } from '@/components/dashboard/pollutant-info-modal';
 import { Input } from '@/components/ui/input';
-import { Skeleton } from '@/components/ui/skeleton';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-
-// Dynamically import the InteractiveMap component to prevent SSR issues
-const InteractiveMap = dynamic(
-  () => import('@/components/dashboard/interactive-map').then((mod) => mod.InteractiveMap),
-  {
-    ssr: false,
-    loading: () => <Skeleton className="h-[500px] w-full rounded-lg" />,
-  }
-);
-
 
 export default function DashboardPage() {
   const locations = getLocationsData();
@@ -108,22 +95,6 @@ export default function DashboardPage() {
           )}
         </div>
       </div>
-
-      <Card>
-        <CardHeader>
-          <CardTitle>Interactive AQI Map</CardTitle>
-          <CardDescription>Visualize real-time air quality. Click a location marker to see details.</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="h-[500px] w-full rounded-md overflow-hidden z-0">
-            <InteractiveMap 
-              locations={locations}
-              onSelectLocation={handleSelectLocation}
-              selectedLocationId={selectedLocation.id}
-            />
-          </div>
-        </CardContent>
-      </Card>
       
       <PollutantInfoModal 
         location={pollutantInfoLocation}
