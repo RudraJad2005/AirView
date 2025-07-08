@@ -102,3 +102,7 @@ const locationsData: LocationData[] = [
 export const getLocationsData = (): LocationData[] => {
   return locationsData;
 };
+
+export const getLocationById = (id: string): LocationData | undefined => {
+  return locationsData.find((location) => location.id === id);
+};
