@@ -1,6 +1,7 @@
+
 "use client";
 
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import dynamic from 'next/dynamic';
 import type { LocationData } from '@/types';
 import { AqiCard } from '@/components/dashboard/aqi-card';
@@ -33,14 +34,14 @@ export function DashboardClient({ locations }: DashboardClientProps) {
   const [pollutantInfoLocation, setPollutantInfoLocation] = useState<LocationData>(locations[0]);
   const [searchQuery, setSearchQuery] = useState('');
 
-  const handleSelectLocation = (location: LocationData) => {
+  const handleSelectLocation = useCallback((location: LocationData) => {
     setSelectedLocation(location);
-  };
+  }, []);
 
-  const handlePollutantInfoClick = (location: LocationData) => {
+  const handlePollutantInfoClick = useCallback((location: LocationData) => {
     setPollutantInfoLocation(location);
     setPollutantInfoModalOpen(true);
-  };
+  }, []);
 
   const filteredLocations = locations.filter(location =>
     location.city.toLowerCase().includes(searchQuery.toLowerCase()) ||
