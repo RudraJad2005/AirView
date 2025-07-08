@@ -45,6 +45,7 @@ const aqiPredictionFlow = ai.defineFlow(
     name: 'aqiPredictionFlow',
     inputSchema: AqiPredictionInputSchema,
     outputSchema: AqiPredictionOutputSchema,
+    retries: 3,
   },
   async input => {
     const {output} = await prompt(input);

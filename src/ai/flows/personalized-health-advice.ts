@@ -58,6 +58,7 @@ const personalizedHealthAdviceFlow = ai.defineFlow(
     name: 'personalizedHealthAdviceFlow',
     inputSchema: PersonalizedHealthAdviceInputSchema,
     outputSchema: PersonalizedHealthAdviceOutputSchema,
+    retries: 3,
   },
   async input => {
     const {output} = await personalizedHealthAdvicePrompt(input);

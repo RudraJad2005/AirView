@@ -41,6 +41,7 @@ const explainPollutantsFlow = ai.defineFlow(
     name: 'explainPollutantsFlow',
     inputSchema: ExplainPollutantsInputSchema,
     outputSchema: ExplainPollutantsOutputSchema,
+    retries: 3,
   },
   async input => {
     const {output} = await prompt(input);
