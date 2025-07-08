@@ -7,8 +7,8 @@ export default function HomePage() {
   const aqiLevels = [
     { name: 'Good', range: '0-50', implication: 'Air quality is satisfactory, and air pollution poses little or no risk.', color: 'bg-green-500' },
     { name: 'Moderate', range: '51-100', implication: 'Air quality is acceptable. However, there may be a risk for some people, particularly those who are unusually sensitive to air pollution.', color: 'bg-yellow-500' },
-    { name: 'Unhealthy for Sensitive Groups', range: '101-150', implication: 'Members of sensitive groups may experience health effects. The general public is less likely to be affected.', color: 'bg-orange-500' },
-    { name: 'Unhealthy', range: '151-200', implication: 'Some members of the general public may experience health effects; members of sensitive groups may experience more serious health effects.', color: 'bg-red-500' },
+    { name: 'Poor', range: '101-150', implication: 'Members of sensitive groups may experience health effects. The general public is less likely to be affected.', color: 'bg-orange-500' },
+    { name: 'Unhealthy for Sensitive Groups', range: '151-200', implication: 'Some members of the general public may experience health effects; members of sensitive groups may experience more serious health effects.', color: 'bg-red-500' },
     { name: 'Very Unhealthy', range: '201-300', implication: 'Health alert: The risk of health effects is increased for everyone.', color: 'bg-purple-500' },
     { name: 'Hazardous', range: '301+', implication: 'Health warning of emergency conditions: everyone is more likely to be affected.', color: 'bg-red-900' },
   ];

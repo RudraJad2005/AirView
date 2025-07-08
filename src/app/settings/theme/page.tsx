@@ -1,7 +1,12 @@
+"use client"
+
+import { useTheme } from "next-themes"
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Label } from '@/components/ui/label';
 
 export default function ThemeSettingsPage() {
+  const { setTheme, theme } = useTheme()
+
   return (
     <div className="space-y-6">
       <div>
@@ -10,7 +15,7 @@ export default function ThemeSettingsPage() {
           Select the theme for the application.
         </p>
       </div>
-      <RadioGroup defaultValue="dark" className="space-y-2">
+      <RadioGroup onValueChange={setTheme} value={theme} className="space-y-2">
         <Label className="flex items-center gap-2 border rounded-md p-4 cursor-pointer">
           <RadioGroupItem value="light" id="light" />
           <span>Light</span>
