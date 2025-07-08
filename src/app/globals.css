@@ -76,7 +76,7 @@ body {
     filter: blur(2px);
     animation-name: float;
     animation-iteration-count: infinite;
-    animation-timing-function: linear;
+    animation-timing-function: ease-in-out;
   }
 
   .cloud-container .cloud::before,
@@ -137,18 +137,37 @@ body {
     transform: scale(var(--cloud-scale));
     left: -10%;
   }
+
+  .animate-breathe {
+    animation: breathe 4s ease-in-out infinite;
+  }
 }
 
 @keyframes float {
   0% {
-    transform: translateY(110vh) scale(var(--cloud-scale));
+    transform: translate(-5vw, 110vh) scale(var(--cloud-scale));
     opacity: 0;
   }
-  10%, 90% {
-    opacity: 1;
+  20% {
+    opacity: 0.7;
+  }
+  80% {
+    opacity: 0.7;
   }
   100% {
-    transform: translateY(-20vh) scale(var(--cloud-scale));
+    transform: translate(5vw, -20vh) scale(var(--cloud-scale));
     opacity: 0;
+  }
+}
+
+@keyframes breathe {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 0.8;
+  }
+  50% {
+    transform: scale(1.05);
+    opacity: 1;
   }
 }

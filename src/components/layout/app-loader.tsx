@@ -10,7 +10,7 @@ export function AppLoader() {
         <div className="cloud"></div>
         <div className="cloud"></div>
       </div>
-      <div className="relative z-10 flex flex-col items-center gap-4 animate-pulse">
+      <div className="relative z-10 flex flex-col items-center gap-4 animate-breathe">
         <Logo />
         <p className="text-lg font-semibold text-muted-foreground">BreatheEasy</p>
       </div>
