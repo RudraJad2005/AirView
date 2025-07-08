@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from 'react';
+import dynamic from 'next/dynamic';
 import type { LocationData } from '@/types';
 import { AqiCard } from '@/components/dashboard/aqi-card';
 import { AqiChart } from '@/components/dashboard/aqi-chart';
@@ -10,11 +11,20 @@ import { Button } from '@/components/ui/button';
 import { HeartPulse, Search } from 'lucide-react';
 import { PollutantInfoModal } from './dashboard/pollutant-info-modal';
 import { Input } from '@/components/ui/input';
-import { AqiHeatmap } from './dashboard/aqi-heatmap';
+import { Skeleton } from './ui/skeleton';
 
 interface DashboardClientProps {
   locations: LocationData[];
 }
+
+const AqiHeatmap = dynamic(
+  () => import('./dashboard/aqi-heatmap').then((mod) => mod.AqiHeatmap),
+  {
+    ssr: false,
+    loading: () => <Skeleton className="h-[500px] w-full rounded-lg" />,
+  }
+);
+
 
 export function DashboardClient({ locations }: DashboardClientProps) {
   const [selectedLocation, setSelectedLocation] = useState<LocationData>(locations[0]);
@@ -101,7 +111,7 @@ export function DashboardClient({ locations }: DashboardClientProps) {
 
       <div className="mt-8">
         <AqiHeatmap
-          locations={filteredLocations}
+          locations={locations}
           onSelectLocation={handleSelectLocation}
           selectedLocationId={selectedLocation.id}
         />

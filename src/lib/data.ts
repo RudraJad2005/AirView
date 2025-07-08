@@ -6,6 +6,8 @@ const locationsData: LocationData[] = [
     city: 'Delhi',
     state: 'Delhi',
     aqi: 185,
+    lat: 28.6139,
+    lng: 77.2090,
     mainPollutant: 'PM2.5',
     pollutants: [
       { name: 'PM2.5', value: 185 },
@@ -30,6 +32,8 @@ const locationsData: LocationData[] = [
     city: 'Mumbai',
     state: 'Maharashtra',
     aqi: 95,
+    lat: 19.0760,
+    lng: 72.8777,
     mainPollutant: 'PM10',
     pollutants: [
       { name: 'PM2.5', value: 45 },
@@ -54,6 +58,8 @@ const locationsData: LocationData[] = [
     city: 'Bengaluru',
     state: 'Karnataka',
     aqi: 65,
+    lat: 12.9716,
+    lng: 77.5946,
     mainPollutant: 'O3',
     pollutants: [
         { name: 'PM2.5', value: 30 },
@@ -78,6 +84,8 @@ const locationsData: LocationData[] = [
     city: 'Chennai',
     state: 'Tamil Nadu',
     aqi: 45,
+    lat: 13.0827,
+    lng: 80.2707,
     mainPollutant: 'PM2.5',
     pollutants: [
         { name: 'PM2.5', value: 45 },
