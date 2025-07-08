@@ -1,7 +1,5 @@
 import Link from 'next/link';
-import { LayoutGrid, MapPin, Settings, BrainCircuit, Home } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
+import { LayoutGrid, MapPin, BrainCircuit, Home } from 'lucide-react';
 import { Logo } from '@/components/logo';
 
 export function AppSidebar() {
@@ -45,22 +43,6 @@ export function AppSidebar() {
               Saved Locations
             </Link>
           </nav>
-        </div>
-        <div className="mt-auto p-4">
-          <Card>
-            <CardContent className="p-4">
-              <div className="flex items-center gap-4">
-                <Button variant="outline" size="icon" className="h-8 w-8">
-                  <Settings className="h-4 w-4" />
-                  <span className="sr-only">Settings</span>
-                </Button>
-                <div>
-                    <p className="text-sm font-medium">Settings</p>
-                    <p className="text-xs text-muted-foreground">Manage your profile.</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
         </div>
       </div>
     </div>
