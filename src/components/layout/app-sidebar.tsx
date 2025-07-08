@@ -18,7 +18,7 @@ export function AppSidebar() {
 
   return (
     <div className="fixed bottom-0 left-0 z-50 w-full border-t bg-background">
-      <nav className="grid h-16 grid-cols-5">
+      <nav className="grid h-20 grid-cols-5">
         {navItems.map((item) => {
           const isActive = pathname.startsWith(item.href) && (item.href !== '/' || pathname === '/');
           return (

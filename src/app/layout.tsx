@@ -33,7 +33,7 @@ export default function RootLayout({
           <AppLoadingProvider>
             <div className="relative flex min-h-screen w-full flex-col">
               <AppHeader />
-              <main className="flex-1 p-4 pb-20 md:p-8 md:pb-20">
+              <main className="flex-1 p-4 pb-24 md:p-8 md:pb-24">
                 {children}
               </main>
               <AppSidebar />
