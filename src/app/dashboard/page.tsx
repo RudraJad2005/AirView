@@ -57,11 +57,11 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      <div className="grid gap-4 lg:grid-cols-7">
-        <div className="lg:col-span-4">
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+        <div>
           <AqiChart data={selectedLocation.historical} />
         </div>
-        <div className="lg:col-span-3">
+        <div>
           <KeyPollutants pollutants={selectedLocation.pollutants} />
         </div>
       </div>
