@@ -97,7 +97,7 @@ export function AqiCalendar() {
             <div key={day} className="font-semibold">{day}</div>
           ))}
         </div>
-        <div className="grid grid-cols-7 gap-1">
+        <div className="grid grid-cols-7 gap-0.5 sm:gap-1">
           {calendarDays.map((dayData, index) => {
             if (!dayData) {
               return <div key={`blank-${index}`} />;
@@ -108,12 +108,12 @@ export function AqiCalendar() {
               <div
                 key={dayData.day}
                 className={cn(
-                  'rounded-lg p-1 flex flex-col justify-center items-center text-center aspect-square',
+                  'rounded-md sm:rounded-lg p-0.5 sm:p-1 flex flex-col justify-center items-center text-center aspect-square',
                   color
                 )}
               >
-                <div className="text-xs font-medium text-black/70">{format(dayDate, 'd MMM')}</div>
-                <div className="font-bold text-lg text-black">{dayData.aqi}</div>
+                <div className="text-[10px] sm:text-xs font-medium text-black/70">{format(dayDate, 'd MMM')}</div>
+                <div className="font-bold text-sm sm:text-lg text-black">{dayData.aqi}</div>
               </div>
             );
           })}
