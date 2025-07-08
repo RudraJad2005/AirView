@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { LayoutGrid, MapPin, BrainCircuit, Home } from 'lucide-react';
+import { LayoutGrid, MapPin, BrainCircuit, Home, Settings } from 'lucide-react';
 import { Logo } from '@/components/logo';
 
 export function AppSidebar() {
@@ -41,6 +41,13 @@ export function AppSidebar() {
             >
               <MapPin className="h-4 w-4" />
               Saved Locations
+            </Link>
+             <Link
+              href="/settings"
+              className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary"
+            >
+              <Settings className="h-4 w-4" />
+              Settings
             </Link>
           </nav>
         </div>

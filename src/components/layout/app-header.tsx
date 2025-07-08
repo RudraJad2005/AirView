@@ -1,7 +1,7 @@
 import Link from 'next/link';
-import { Menu, LayoutGrid, MapPin, BrainCircuit, Home } from 'lucide-react';
+import { Menu, LayoutGrid, MapPin, BrainCircuit, Home, Settings } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Sheet, SheetContent, SheetTrigger, SheetTitle } from '@/components/ui/sheet';
+import { Sheet, SheetContent, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { Logo } from '../logo';
 
 export function AppHeader() {
@@ -48,6 +48,13 @@ export function AppHeader() {
             >
               <MapPin className="h-5 w-5" />
               Saved Locations
+            </Link>
+            <Link
+              href="/settings"
+              className="mx-[-0.65rem] flex items-center gap-4 rounded-xl px-3 py-2 text-muted-foreground hover:text-foreground"
+            >
+              <Settings className="h-5 w-5" />
+              Settings
             </Link>
           </nav>
         </SheetContent>
