@@ -36,20 +36,20 @@ export default function DashboardPage() {
 
   return (
     <div className="flex-1 space-y-8">
-      <div className="flex items-center justify-between space-y-2">
+      <div className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
         <div>
           <h2 className="text-3xl font-bold tracking-tight">Dashboard</h2>
           <p className="text-muted-foreground">
             Real-time air quality monitoring for {selectedLocation.city}, {selectedLocation.state}.
           </p>
         </div>
-        <div className="flex items-center space-x-2">
+        <div className="flex w-full items-center space-x-2 sm:w-auto">
             <HealthAdviceModal 
               location={selectedLocation} 
               open={healthAdviceModalOpen}
               onOpenChange={setHealthAdviceModalOpen}
             >
-              <Button>
+              <Button className="w-full sm:w-auto">
                 <HeartPulse className="mr-2 h-4 w-4" />
                 Personalized Health Advice
               </Button>
@@ -57,7 +57,7 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
+      <div className="grid gap-4 lg:grid-cols-7">
         <div className="lg:col-span-4">
           <AqiChart data={selectedLocation.historical} />
         </div>
@@ -79,7 +79,7 @@ export default function DashboardPage() {
                 />
             </div>
         </div>
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {filteredLocations.length > 0 ? (
             filteredLocations.map((location) => (
               <AqiCard
@@ -91,7 +91,7 @@ export default function DashboardPage() {
               />
             ))
           ) : (
-            <p className="text-muted-foreground col-span-full">No locations found for your search.</p>
+            <p className="col-span-full text-muted-foreground">No locations found for your search.</p>
           )}
         </div>
       </div>
