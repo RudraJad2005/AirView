@@ -1,10 +1,11 @@
 import type { Metadata } from 'next';
 import './globals.css';
-import { Toaster } from '@/components/ui/toaster';
 import { AppSidebar } from '@/components/layout/app-sidebar';
 import { AppHeader } from '@/components/layout/app-header';
 import { AppLoadingProvider } from '@/components/layout/app-loading-provider';
 import { ThemeProvider } from '@/components/theme-provider';
+import { Toaster } from '@/components/ui/toaster';
+import { ErrorDialogProvider } from '@/components/layout/error-dialog-provider';
 
 export const metadata: Metadata = {
   title: 'BreatheEasy India',
@@ -30,15 +31,17 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <AppLoadingProvider>
-            <div className="relative flex min-h-screen w-full flex-col overflow-hidden">
-              <AppHeader />
-              <main className="flex-1 p-4 pb-24 md:p-8 md:pb-24">
-                {children}
-              </main>
-              <AppSidebar />
-            </div>
-          </AppLoadingProvider>
+          <ErrorDialogProvider>
+            <AppLoadingProvider>
+              <div className="relative flex min-h-screen w-full flex-col overflow-hidden">
+                <AppHeader />
+                <main className="flex-1 p-4 pb-24 md:p-8 md:pb-24">
+                  {children}
+                </main>
+                <AppSidebar />
+              </div>
+            </AppLoadingProvider>
+          </ErrorDialogProvider>
           <Toaster />
         </ThemeProvider>
       </body>

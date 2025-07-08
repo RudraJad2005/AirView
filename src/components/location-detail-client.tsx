@@ -3,10 +3,10 @@
 import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Loader2, ShieldCheck, Leaf, HeartPulse, Wind, ArrowLeft } from 'lucide-react';
+import { ShieldCheck, Leaf, HeartPulse, Wind, ArrowLeft } from 'lucide-react';
 import { predictAqi, AqiPredictionOutput } from '@/ai/flows/aqi-prediction-flow';
 import { getAqiGuidance, AqiGuidanceOutput } from '@/ai/flows/aqi-guidance-flow';
-import { useToast } from '@/hooks/use-toast';
+import { useErrorDialog } from '@/hooks/use-error-dialog';
 import { getAqiInfo } from '@/lib/aqi-helpers';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
@@ -25,7 +25,7 @@ export function LocationDetailClient({ location }: LocationDetailClientProps) {
   const [predictions, setPredictions] = useState<AqiPredictionOutput | null>(null);
   const [guidance, setGuidance] = useState<AqiGuidanceOutput | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const { toast } = useToast();
+  const { showError } = useErrorDialog();
 
   useEffect(() => {
     const getAnalyticsData = async () => {
@@ -39,18 +39,14 @@ export function LocationDetailClient({ location }: LocationDetailClientProps) {
         setGuidance(guidanceResult);
       } catch (error) {
         console.error('Failed to get analytics data:', error);
-        toast({
-          variant: 'destructive',
-          title: 'Error',
-          description: 'Could not fetch analytics data. Please try again.',
-        });
+        showError('Analytics Failed', 'Could not fetch analytics data. Please try again.');
       } finally {
         setIsLoading(false);
       }
     };
 
     getAnalyticsData();
-  }, [location.state, toast]);
+  }, [location.state, showError]);
 
   const { category, color } = getAqiInfo(location.aqi);
 

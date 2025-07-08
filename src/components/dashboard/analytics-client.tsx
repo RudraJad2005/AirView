@@ -8,12 +8,12 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Loader2, BrainCircuit, ShieldCheck, Leaf, HeartPulse, Wind } from 'lucide-react';
 import { predictAqi, AqiPredictionOutput } from '@/ai/flows/aqi-prediction-flow';
 import { getAqiGuidance, AqiGuidanceOutput } from '@/ai/flows/aqi-guidance-flow';
-import { useToast } from '@/hooks/use-toast';
 import { getAqiInfo } from '@/lib/aqi-helpers';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { Skeleton } from '../ui/skeleton';
+import { useErrorDialog } from '@/hooks/use-error-dialog';
 
 interface AnalyticsClientProps {
   states: string[];
@@ -24,15 +24,11 @@ export function AnalyticsClient({ states }: AnalyticsClientProps) {
   const [predictions, setPredictions] = useState<AqiPredictionOutput | null>(null);
   const [guidance, setGuidance] = useState<AqiGuidanceOutput | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const { toast } = useToast();
+  const { showError } = useErrorDialog();
 
   const handleGenerateReport = async () => {
     if (!selectedState) {
-      toast({
-        variant: 'destructive',
-        title: 'Error',
-        description: 'Please select a state first.',
-      });
+      showError('Error', 'Please select a state first.');
       return;
     }
     setIsLoading(true);
@@ -47,11 +43,7 @@ export function AnalyticsClient({ states }: AnalyticsClientProps) {
       setGuidance(guidanceResult);
     } catch (error) {
       console.error('Failed to get analytics data:', error);
-      toast({
-        variant: 'destructive',
-        title: 'Error',
-        description: 'Could not fetch data. Please try again.',
-      });
+      showError('Analytics Failed', 'Could not fetch analytics data. Please try again later.');
     } finally {
       setIsLoading(false);
     }

@@ -100,7 +100,7 @@ export function HealthAdvisory() {
             </p>
           </div>
   
-          <Button size="lg" className="w-full h-16 bg-blue-500 hover:bg-blue-600 text-primary-foreground">
+          <Button size="lg" className="w-full h-16 bg-blue-500 hover:bg-blue-600 text-primary-foreground transition ease-in-out duration-300 hover:-translate-y-1 hover:scale-80">
             <div className="flex items-center justify-between w-full">
               <div className="flex items-center gap-3">
                 <HeartPulse className="h-8 w-8" />

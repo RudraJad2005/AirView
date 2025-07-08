@@ -8,10 +8,10 @@ import {
   DialogTitle,
   DialogDescription,
 } from '@/components/ui/dialog';
-import { useToast } from '@/hooks/use-toast';
+import { useErrorDialog } from '@/hooks/use-error-dialog';
 import { explainPollutants, ExplainPollutantsOutput } from '@/ai/flows/pollutant-explanation';
 import type { LocationData } from '@/types';
-import { Loader2, Info } from 'lucide-react';
+import { Info } from 'lucide-react';
 import { Skeleton } from '../ui/skeleton';
 
 interface PollutantInfoModalProps {
@@ -23,7 +23,7 @@ interface PollutantInfoModalProps {
 export function PollutantInfoModal({ location, open, onOpenChange }: PollutantInfoModalProps) {
   const [explanation, setExplanation] = useState<ExplainPollutantsOutput | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const { toast } = useToast();
+  const { showError } = useErrorDialog();
 
   useEffect(() => {
     const getExplanation = async () => {
@@ -37,18 +37,14 @@ export function PollutantInfoModal({ location, open, onOpenChange }: PollutantIn
           setExplanation(result);
         } catch (error) {
           console.error('Failed to get pollutant explanation:', error);
-          toast({
-            variant: 'destructive',
-            title: 'Error',
-            description: 'Could not fetch pollutant information. Please try again.',
-          });
+          showError('Information Failed', 'Could not fetch pollutant information. Please try again.');
         } finally {
           setIsLoading(false);
         }
       }
     };
     getExplanation();
-  }, [open, location.city, toast]);
+  }, [open, location.city, showError]);
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>

@@ -19,10 +19,10 @@ import {
 } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
-import { useToast } from '@/hooks/use-toast';
 import { getPersonalizedHealthAdvice, PersonalizedHealthAdviceOutput } from '@/ai/flows/personalized-health-advice';
 import type { LocationData } from '@/types';
 import { Loader2, Sparkles } from 'lucide-react';
+import { useErrorDialog } from '@/hooks/use-error-dialog';
 
 interface HealthAdviceModalProps {
   location: LocationData;
@@ -35,7 +35,7 @@ export function HealthAdviceModal({ location, children, open, onOpenChange }: He
   const [healthCondition, setHealthCondition] = useState('none');
   const [advice, setAdvice] = useState<PersonalizedHealthAdviceOutput | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const { toast } = useToast();
+  const { showError } = useErrorDialog();
 
   const handleGetAdvice = async () => {
     setIsLoading(true);
@@ -49,11 +49,7 @@ export function HealthAdviceModal({ location, children, open, onOpenChange }: He
       setAdvice(result);
     } catch (error) {
       console.error('Failed to get health advice:', error);
-      toast({
-        variant: 'destructive',
-        title: 'Error',
-        description: 'Could not fetch health advice. Please try again.',
-      });
+      showError('Advice Failed', 'Could not fetch health advice. Please try again.');
     } finally {
       setIsLoading(false);
     }
