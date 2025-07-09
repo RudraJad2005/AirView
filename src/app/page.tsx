@@ -4,6 +4,7 @@ import Link from "next/link";
 import { LayoutGrid, BrainCircuit, ArrowRight } from "lucide-react";
 import { AqiCalendar } from "@/components/aqi-calendar";
 import { HealthAdvisory } from "@/components/health-advisory";
+import { NationalAqiSnapshot } from "@/components/national-aqi-snapshot";
 
 export default function HomePage() {
   const aqiLevels = [
@@ -102,6 +103,8 @@ export default function HomePage() {
       <HealthAdvisory />
 
       <AqiCalendar />
+
+      <NationalAqiSnapshot />
 
     </div>
   );
