@@ -13,7 +13,7 @@ export default function SettingsLayout({
 
   const navItems = {
     'Account': [
-      { name: 'Notifications', href: '/settings/notifications' },
+      { name: 'Notifications', href: '/settings' },
       { name: 'Theme', href: '/settings/theme' },
       { name: 'Location Settings', href: '/settings/location' },
     ],
@@ -25,9 +25,6 @@ export default function SettingsLayout({
   };
 
   const isLinkActive = (href: string) => {
-    if (href === '/settings/notifications' && pathname === '/settings') {
-      return true;
-    }
     return pathname === href;
   };
 
