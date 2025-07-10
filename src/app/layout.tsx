@@ -6,6 +6,7 @@ import { AppLoadingProvider } from '@/components/layout/app-loading-provider';
 import { ThemeProvider } from '@/components/theme-provider';
 import { Toaster } from '@/components/ui/toaster';
 import { ErrorDialogProvider } from '@/components/layout/error-dialog-provider';
+import { AuthProvider } from '@/components/layout/auth-provider';
 
 export const metadata: Metadata = {
   title: 'BreatheEasy India',
@@ -22,7 +23,7 @@ export default function RootLayout({
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link href="https://fonts.googleapis.com/css2?family=Inter&display=swap" rel="stylesheet" />
+        <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet" />
       </head>
       <body className="font-body antialiased">
         <ThemeProvider
@@ -32,15 +33,17 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <ErrorDialogProvider>
-            <AppLoadingProvider>
-              <div className="relative flex min-h-screen w-full flex-col overflow-hidden">
-                <AppHeader />
-                <main className="flex-1 p-4 pb-24 md:p-8 md:pb-24">
-                  {children}
-                </main>
-                <AppSidebar />
-              </div>
-            </AppLoadingProvider>
+            <AuthProvider>
+              <AppLoadingProvider>
+                <div className="relative flex min-h-screen w-full flex-col overflow-hidden">
+                  <AppHeader />
+                  <main className="flex-1 p-4 pb-24 md:p-8 md:pb-24">
+                    {children}
+                  </main>
+                  <AppSidebar />
+                </div>
+              </AppLoadingProvider>
+            </AuthProvider>
           </ErrorDialogProvider>
           <Toaster />
         </ThemeProvider>
