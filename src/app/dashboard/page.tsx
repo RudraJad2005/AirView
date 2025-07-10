@@ -15,6 +15,12 @@ import { Input } from '@/components/ui/input';
 import { CityComparisonChart } from '@/components/dashboard/city-comparison-chart';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useErrorDialog } from '@/hooks/use-error-dialog';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 
 export default function DashboardPage() {
   const allLocations = getLocationsData();
@@ -24,8 +30,7 @@ export default function DashboardPage() {
   const [pollutantInfoLocation, setPollutantInfoLocation] = useState<LocationData>(allLocations[0]);
   const [searchQuery, setSearchQuery] = useState('');
 
-  const [comparisonLocations, setComparisonLocations] = useState<LocationData[]>([allLocations[0], allLocations[1]]);
-  const [comparisonSearch, setComparisonSearch] = useState('');
+  const [comparisonLocations, setComparisonLocations] = useState<LocationData[]>([allLocations[0]]);
   const { showError } = useErrorDialog();
 
 
@@ -38,27 +43,16 @@ export default function DashboardPage() {
     setPollutantInfoModalOpen(true);
   }, []);
 
-  const handleAddComparison = () => {
-    if (!comparisonSearch) return;
-
+  const handleAddComparison = (locationToAdd: LocationData) => {
     if (comparisonLocations.length >= 5) {
       showError('Limit Reached', 'You can compare a maximum of 5 cities at a time.');
       return;
     }
 
-    const locationToAdd = allLocations.find(
-      l => l.city.toLowerCase() === comparisonSearch.toLowerCase()
-    );
-
-    if (locationToAdd) {
-      if (comparisonLocations.some(l => l.id === locationToAdd.id)) {
-        showError('Already Added', `${locationToAdd.city} is already in the comparison list.`);
-      } else {
-        setComparisonLocations(prev => [...prev, locationToAdd]);
-      }
-      setComparisonSearch('');
+    if (comparisonLocations.some(l => l.id === locationToAdd.id)) {
+      showError('Already Added', `${locationToAdd.city} is already in the comparison list.`);
     } else {
-      showError('Location Not Found', `Could not find data for "${comparisonSearch}". Please check the city name.`);
+      setComparisonLocations(prev => [...prev, locationToAdd]);
     }
   };
 
@@ -69,6 +63,10 @@ export default function DashboardPage() {
   const filteredLocations = allLocations.filter(location =>
     location.city.toLowerCase().includes(searchQuery.toLowerCase()) ||
     location.state.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+  
+  const availableForComparison = allLocations.filter(
+    l => !comparisonLocations.some(cL => cL.id === l.id)
   );
 
   return (
@@ -140,16 +138,21 @@ export default function DashboardPage() {
         </CardHeader>
         <CardContent className="space-y-4">
             <div className="flex flex-col sm:flex-row gap-2">
-                <Input
-                    placeholder="Enter city name to add..."
-                    value={comparisonSearch}
-                    onChange={(e) => setComparisonSearch(e.target.value)}
-                    onKeyDown={(e) => e.key === 'Enter' && handleAddComparison()}
-                />
-                <Button onClick={handleAddComparison} className="w-full sm:w-auto">
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="outline" className="w-full sm:w-auto" disabled={availableForComparison.length === 0}>
                     <PlusCircle className="mr-2 h-4 w-4" />
-                    Add City
-                </Button>
+                     Add City to Compare
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className="w-56">
+                  {availableForComparison.map(location => (
+                    <DropdownMenuItem key={location.id} onSelect={() => handleAddComparison(location)}>
+                      {location.city}, {location.state}
+                    </DropdownMenuItem>
+                  ))}
+                </DropdownMenuContent>
+              </DropdownMenu>
             </div>
              {comparisonLocations.length > 0 && (
               <div className="flex flex-wrap gap-2">
