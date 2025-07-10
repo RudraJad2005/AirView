@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState, useCallback } from 'react';
@@ -8,17 +9,25 @@ import { AqiChart } from '@/components/dashboard/aqi-chart';
 import { KeyPollutants } from '@/components/dashboard/key-pollutants';
 import { HealthAdviceModal } from '@/components/dashboard/health-advice-modal';
 import { Button } from '@/components/ui/button';
-import { HeartPulse, Search } from 'lucide-react';
+import { HeartPulse, Search, PlusCircle, X } from 'lucide-react';
 import { PollutantInfoModal } from '@/components/dashboard/pollutant-info-modal';
 import { Input } from '@/components/ui/input';
+import { CityComparisonChart } from '@/components/dashboard/city-comparison-chart';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { useErrorDialog } from '@/hooks/use-error-dialog';
 
 export default function DashboardPage() {
-  const locations = getLocationsData();
-  const [selectedLocation, setSelectedLocation] = useState<LocationData>(locations[0]);
+  const allLocations = getLocationsData();
+  const [selectedLocation, setSelectedLocation] = useState<LocationData>(allLocations[0]);
   const [healthAdviceModalOpen, setHealthAdviceModalOpen] = useState(false);
   const [pollutantInfoModalOpen, setPollutantInfoModalOpen] = useState(false);
-  const [pollutantInfoLocation, setPollutantInfoLocation] = useState<LocationData>(locations[0]);
+  const [pollutantInfoLocation, setPollutantInfoLocation] = useState<LocationData>(allLocations[0]);
   const [searchQuery, setSearchQuery] = useState('');
+
+  const [comparisonLocations, setComparisonLocations] = useState<LocationData[]>([allLocations[0], allLocations[1]]);
+  const [comparisonSearch, setComparisonSearch] = useState('');
+  const { showError } = useErrorDialog();
+
 
   const handleSelectLocation = useCallback((location: LocationData) => {
     setSelectedLocation(location);
@@ -29,7 +38,35 @@ export default function DashboardPage() {
     setPollutantInfoModalOpen(true);
   }, []);
 
-  const filteredLocations = locations.filter(location =>
+  const handleAddComparison = () => {
+    if (!comparisonSearch) return;
+
+    if (comparisonLocations.length >= 5) {
+      showError('Limit Reached', 'You can compare a maximum of 5 cities at a time.');
+      return;
+    }
+
+    const locationToAdd = allLocations.find(
+      l => l.city.toLowerCase() === comparisonSearch.toLowerCase()
+    );
+
+    if (locationToAdd) {
+      if (comparisonLocations.some(l => l.id === locationToAdd.id)) {
+        showError('Already Added', `${locationToAdd.city} is already in the comparison list.`);
+      } else {
+        setComparisonLocations(prev => [...prev, locationToAdd]);
+      }
+      setComparisonSearch('');
+    } else {
+      showError('Location Not Found', `Could not find data for "${comparisonSearch}". Please check the city name.`);
+    }
+  };
+
+  const handleRemoveComparison = (locationId: string) => {
+    setComparisonLocations(prev => prev.filter(l => l.id !== locationId));
+  };
+
+  const filteredLocations = allLocations.filter(location =>
     location.city.toLowerCase().includes(searchQuery.toLowerCase()) ||
     location.state.toLowerCase().includes(searchQuery.toLowerCase())
   );
@@ -96,6 +133,41 @@ export default function DashboardPage() {
         </div>
       </div>
       
+      <Card>
+        <CardHeader>
+            <CardTitle>Compare City AQI Trends</CardTitle>
+            <CardDescription>Add up to 5 cities to compare their AQI for the last 7 days.</CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+            <div className="flex flex-col sm:flex-row gap-2">
+                <Input
+                    placeholder="Enter city name to add..."
+                    value={comparisonSearch}
+                    onChange={(e) => setComparisonSearch(e.target.value)}
+                    onKeyDown={(e) => e.key === 'Enter' && handleAddComparison()}
+                />
+                <Button onClick={handleAddComparison} className="w-full sm:w-auto">
+                    <PlusCircle className="mr-2 h-4 w-4" />
+                    Add City
+                </Button>
+            </div>
+             {comparisonLocations.length > 0 && (
+              <div className="flex flex-wrap gap-2">
+                {comparisonLocations.map(location => (
+                  <div key={location.id} className="flex items-center gap-1.5 rounded-full bg-muted px-3 py-1 text-sm">
+                    <span>{location.city}</span>
+                    <button onClick={() => handleRemoveComparison(location.id)} className="text-muted-foreground hover:text-foreground">
+                      <X className="h-3 w-3" />
+                      <span className="sr-only">Remove {location.city}</span>
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
+            <CityComparisonChart locations={comparisonLocations} />
+        </CardContent>
+      </Card>
+
       <PollutantInfoModal 
         location={pollutantInfoLocation}
         open={pollutantInfoModalOpen}
