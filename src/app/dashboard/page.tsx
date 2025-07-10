@@ -159,7 +159,11 @@ export default function DashboardPage() {
                 {comparisonLocations.map(location => (
                   <div key={location.id} className="flex items-center gap-1.5 rounded-full bg-muted px-3 py-1 text-sm">
                     <span>{location.city}</span>
-                    <button onClick={() => handleRemoveComparison(location.id)} className="text-muted-foreground hover:text-foreground">
+                    <button 
+                      onClick={() => handleRemoveComparison(location.id)} 
+                      className="text-muted-foreground hover:text-foreground"
+                      suppressHydrationWarning
+                    >
                       <X className="h-3 w-3" />
                       <span className="sr-only">Remove {location.city}</span>
                     </button>
