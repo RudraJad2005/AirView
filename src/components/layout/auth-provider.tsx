@@ -12,21 +12,23 @@ import {
 import { app } from "@/lib/firebase";
 import { AppLoader } from "./app-loader";
 
-const auth = getAuth(app);
+// The auth service is initialized here only on the client-side
+// where the `app` object is guaranteed to exist.
+const auth = app ? getAuth(app) : null;
 
 interface AuthContextType {
   user: User | null;
   loading: boolean;
-  signup: typeof createUserWithEmailAndPassword;
-  login: typeof signInWithEmailAndPassword;
+  signup: (email: string, password: string) => Promise<any>;
+  login: (email: string, password: string) => Promise<any>;
   logout: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType>({
   user: null,
   loading: true,
-  signup: createUserWithEmailAndPassword,
-  login: signInWithEmailAndPassword,
+  signup: async () => {},
+  login: async () => {},
   logout: async () => {},
 });
 
@@ -37,6 +39,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    if (!auth) {
+        setLoading(false);
+        console.warn("Firebase Auth is not initialized. User authentication will not work.");
+        return;
+    }
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       setUser(user);
       setLoading(false);
@@ -44,13 +51,26 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     return () => unsubscribe();
   }, []);
 
-  const logout = () => signOut(auth);
+  const signup = (email: string, password: string) => {
+    if (!auth) return Promise.reject(new Error("Firebase not initialized"));
+    return createUserWithEmailAndPassword(auth, email, password);
+  }
+
+  const login = (email: string, password: string) => {
+    if (!auth) return Promise.reject(new Error("Firebase not initialized"));
+    return signInWithEmailAndPassword(auth, email, password);
+  }
+
+  const logout = () => {
+    if (!auth) return Promise.reject(new Error("Firebase not initialized"));
+    return signOut(auth);
+  }
 
   const value = {
     user,
     loading,
-    signup: (email, password) => createUserWithEmailAndPassword(auth, email, password),
-    login: (email, password) => signInWithEmailAndPassword(auth, email, password),
+    signup,
+    login,
     logout,
   };
 
