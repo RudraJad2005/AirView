@@ -1,12 +1,12 @@
 
 "use client";
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import Link from 'next/link';
 import { useAuth } from '@/components/layout/auth-provider';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Loader2, MapPin, AlertTriangle, BadgeHelp } from 'lucide-react';
+import { Loader2, MapPin, AlertTriangle, Crosshair } from 'lucide-react';
 import { getLocationsData } from '@/lib/data';
 import { calculateDistance, cn } from '@/lib/utils';
 import { getAqiInfo } from '@/lib/aqi-helpers';
@@ -19,12 +19,7 @@ export function CurrentLocationAqi() {
   const [location, setLocation] = useState<LocationData | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    if (!user) {
-      setStatus('idle');
-      return;
-    }
-
+  const handleFindLocation = () => {
     if ('geolocation' in navigator) {
       setStatus('loading');
       navigator.geolocation.getCurrentPosition(
@@ -45,8 +40,8 @@ export function CurrentLocationAqi() {
           setLocation(closestLocation);
           setStatus('success');
         },
-        (error) => {
-          console.error("Geolocation error:", error);
+        (geoError) => {
+          console.error("Geolocation error:", geoError);
           setError("Permission to access location was denied. Please enable it in your browser settings to see local AQI.");
           setStatus('error');
         }
@@ -55,14 +50,14 @@ export function CurrentLocationAqi() {
       setError("Geolocation is not supported by your browser.");
       setStatus('error');
     }
-  }, [user]);
+  };
 
   if (!user) {
     return (
       <Card className="flex flex-col items-center justify-center text-center min-h-[250px] bg-muted/50">
         <CardHeader>
           <CardTitle>See Your Local Air Quality</CardTitle>
-          <CardDescription>Log in and grant location access to view the real-time AQI for your area.</CardDescription>
+          <CardDescription>Log in to view the real-time AQI for your area.</CardDescription>
         </CardHeader>
         <CardContent>
           <Button asChild>
@@ -71,6 +66,23 @@ export function CurrentLocationAqi() {
         </CardContent>
       </Card>
     );
+  }
+
+  if (status === 'idle') {
+    return (
+         <Card className="flex flex-col items-center justify-center text-center min-h-[250px] bg-muted/50">
+            <CardHeader>
+            <CardTitle>What's the air like near you?</CardTitle>
+            <CardDescription>Click the button below to allow location access and find the nearest monitoring station.</CardDescription>
+            </CardHeader>
+            <CardContent>
+                <Button onClick={handleFindLocation}>
+                    <Crosshair className="mr-2 h-4 w-4" />
+                    Find My Location
+                </Button>
+            </CardContent>
+      </Card>
+    )
   }
 
   if (status === 'loading') {
@@ -86,8 +98,8 @@ export function CurrentLocationAqi() {
     return (
       <Card className="flex flex-col items-center justify-center text-center min-h-[250px] border-destructive/50">
         <AlertTriangle className="h-8 w-8 text-destructive" />
-        <p className="mt-4 text-destructive">{error || "Could not determine your location."}</p>
-        <p className="mt-2 text-sm text-muted-foreground max-w-sm">{error ? "" : "We couldn't find a monitoring station near you. Please check the dashboard for other cities."}</p>
+        <p className="mt-4 text-destructive max-w-sm">{error || "Could not determine your location."}</p>
+        <Button variant="secondary" className="mt-4" onClick={handleFindLocation}>Try Again</Button>
       </Card>
     );
   }
