@@ -1,12 +1,12 @@
 
 "use client";
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useAuth } from '@/components/layout/auth-provider';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Loader2, MapPin, AlertTriangle, Crosshair } from 'lucide-react';
+import { Loader2, MapPin, AlertTriangle } from 'lucide-react';
 import { getLocationsData } from '@/lib/data';
 import { calculateDistance, cn } from '@/lib/utils';
 import { getAqiInfo } from '@/lib/aqi-helpers';
@@ -15,57 +15,67 @@ import type { LocationData } from '@/types';
 
 export function CurrentLocationAqi() {
   const { user } = useAuth();
-  const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
+  const [status, setStatus] = useState<'loading' | 'success' | 'error'>('loading');
   const [location, setLocation] = useState<LocationData | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  const handleFindLocation = () => {
-    if ('geolocation' in navigator) {
-      setStatus('loading');
-      setError(null);
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          const { latitude, longitude } = position.coords;
-          const allLocations = getLocationsData();
-          let closestLocation: LocationData | null = null;
-          let minDistance = Infinity;
+  useEffect(() => {
+    // Automatically trigger location finding on component mount
+    const findLocation = () => {
+      if (!user) {
+        setStatus('success'); // Don't show an error, just the login prompt.
+        return;
+      }
 
-          for (const loc of allLocations) {
-            const distance = calculateDistance(latitude, longitude, loc.lat, loc.lng);
-            if (distance < minDistance) {
-              minDistance = distance;
-              closestLocation = loc;
+      if ('geolocation' in navigator) {
+        setStatus('loading');
+        setError(null);
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            const { latitude, longitude } = position.coords;
+            const allLocations = getLocationsData();
+            let closestLocation: LocationData | null = null;
+            let minDistance = Infinity;
+
+            for (const loc of allLocations) {
+              const distance = calculateDistance(latitude, longitude, loc.lat, loc.lng);
+              if (distance < minDistance) {
+                minDistance = distance;
+                closestLocation = loc;
+              }
             }
-          }
-          
-          setLocation(closestLocation);
-          setStatus('success');
-        },
-        (geoError) => {
-          console.error("Geolocation error:", geoError);
-          switch(geoError.code) {
-            case geoError.PERMISSION_DENIED:
-              setError("Location access was denied. Please enable it in your browser or app settings to see local AQI.");
-              break;
-            case geoError.POSITION_UNAVAILABLE:
-              setError("Location information is unavailable. Please try again later.");
-              break;
-            case geoError.TIMEOUT:
-              setError("The request to get user location timed out. Please try again.");
-              break;
-            default:
-              setError("An unknown error occurred while trying to get your location.");
-              break;
-          }
-          setStatus('error');
-        },
-        { timeout: 10000 } // Add a 10-second timeout
-      );
-    } else {
-      setError("Geolocation is not supported by your browser or device.");
-      setStatus('error');
-    }
-  };
+            
+            setLocation(closestLocation);
+            setStatus('success');
+          },
+          (geoError) => {
+            console.error("Geolocation error:", geoError);
+            switch(geoError.code) {
+              case geoError.PERMISSION_DENIED:
+                setError("Location access was denied. Please enable it in your browser or app settings to see local AQI.");
+                break;
+              case geoError.POSITION_UNAVAILABLE:
+                setError("Location information is unavailable. Please try again later.");
+                break;
+              case geoError.TIMEOUT:
+                setError("The request to get user location timed out. Please try again.");
+                break;
+              default:
+                setError("An unknown error occurred while trying to get your location.");
+                break;
+            }
+            setStatus('error');
+          },
+          { timeout: 10000 }
+        );
+      } else {
+        setError("Geolocation is not supported by your browser or device.");
+        setStatus('error');
+      }
+    };
+    
+    findLocation();
+  }, [user]);
 
   if (!user) {
     return (
@@ -83,23 +93,6 @@ export function CurrentLocationAqi() {
     );
   }
 
-  if (status === 'idle') {
-    return (
-         <Card className="flex flex-col items-center justify-center text-center min-h-[250px] bg-muted/50">
-            <CardHeader>
-            <CardTitle>What's the air like near you?</CardTitle>
-            <CardDescription>Click the button below to allow location access and find the nearest monitoring station.</CardDescription>
-            </CardHeader>
-            <CardContent>
-                <Button onClick={handleFindLocation}>
-                    <Crosshair className="mr-2 h-4 w-4" />
-                    Find My Location
-                </Button>
-            </CardContent>
-      </Card>
-    )
-  }
-
   if (status === 'loading') {
     return (
       <Card className="flex flex-col items-center justify-center text-center min-h-[250px]">
@@ -114,7 +107,7 @@ export function CurrentLocationAqi() {
       <Card className="flex flex-col items-center justify-center text-center min-h-[250px] border-destructive/50">
         <AlertTriangle className="h-8 w-8 text-destructive" />
         <p className="mt-4 text-destructive max-w-sm">{error || "Could not determine your location."}</p>
-        <Button variant="secondary" className="mt-4" onClick={handleFindLocation}>Try Again</Button>
+        <Button variant="secondary" className="mt-4" onClick={() => window.location.reload()}>Try Again</Button>
       </Card>
     );
   }
