@@ -1,6 +1,6 @@
 import { db } from './firebase';
 import { doc, getDoc, setDoc, updateDoc, arrayUnion, arrayRemove } from 'firebase/firestore';
-import { getLocationsData, getLocationById } from './data';
+import { getLocationsData } from './data';
 import type { LocationData } from '@/types';
 
 // The structure of the user document in Firestore
@@ -18,8 +18,7 @@ export async function getSavedLocations(userId: string): Promise<LocationData[]>
   const userDocSnap = await getDoc(userDocRef);
 
   if (!userDocSnap.exists()) {
-    // If the user document doesn't exist, create it with an empty array.
-    await setDoc(userDocRef, { savedLocations: [] });
+    // If the user document doesn't exist, it's safe to assume no saved locations.
     return [];
   }
 
@@ -38,17 +37,12 @@ export async function getSavedLocations(userId: string): Promise<LocationData[]>
  */
 export async function addSavedLocation(userId: string, locationId: string): Promise<void> {
   const userDocRef = doc(db, 'users', userId);
-  const docSnap = await getDoc(userDocRef);
-
-  if (!docSnap.exists()) {
-    // If the document doesn't exist, create it with the new location.
-    await setDoc(userDocRef, { savedLocations: [locationId] });
-  } else {
-    // Otherwise, add the new location ID to the existing array.
-    await updateDoc(userDocRef, {
-      savedLocations: arrayUnion(locationId)
-    });
-  }
+  
+  // Use set with merge:true. This will create the document if it doesn't exist,
+  // or merge the data if it does. It gracefully handles both cases.
+  await setDoc(userDocRef, {
+    savedLocations: arrayUnion(locationId)
+  }, { merge: true });
 }
 
 /**
