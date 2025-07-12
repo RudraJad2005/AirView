@@ -1,9 +1,10 @@
+
 "use client";
 
 import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { ShieldCheck, Leaf, HeartPulse, Wind, ArrowLeft } from 'lucide-react';
+import { ShieldCheck, Leaf, HeartPulse, Wind, ArrowLeft, TrendingUp, TrendingDown, CalendarDays } from 'lucide-react';
 import { predictAqi, AqiPredictionOutput } from '@/ai/flows/aqi-prediction-flow';
 import { getAqiGuidance, AqiGuidanceOutput } from '@/ai/flows/aqi-guidance-flow';
 import { useErrorDialog } from '@/hooks/use-error-dialog';
@@ -51,32 +52,43 @@ export function LocationDetailClient({ location }: LocationDetailClientProps) {
   const { category, color } = getAqiInfo(location.aqi);
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6 md:space-y-8">
       <div className="flex flex-col items-start gap-4">
           <Link href="/dashboard" className="flex items-center gap-2 text-sm text-muted-foreground hover:text-primary">
             <ArrowLeft className="h-4 w-4" />
             Back to Dashboard
           </Link>
-          <div className='w-full'>
-            <h2 className="text-3xl font-bold tracking-tight">{location.city}, {location.state}</h2>
-            <div className="flex flex-col sm:flex-row sm:items-center gap-2 mt-2">
-              <span className="text-5xl font-bold">{location.aqi}</span>
-              <Badge className={cn("text-white h-7", color)}>{category}</Badge>
+          <div className='w-full flex flex-col md:flex-row md:items-end md:justify-between gap-2'>
+            <h2 className="text-2xl md:text-3xl font-bold tracking-tight">{location.city}, {location.state}</h2>
+            <div className="flex items-end gap-3">
+              <span className="text-5xl md:text-6xl font-bold leading-none">{location.aqi}</span>
+              <div className='flex flex-col items-start'>
+                <p className="text-sm text-muted-foreground">US AQI</p>
+                <Badge className={cn("text-white h-7", color)}>{category}</Badge>
+              </div>
             </div>
           </div>
       </div>
 
-      <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-7">
+      <div className="grid gap-6 md:gap-8 md:grid-cols-2 lg:grid-cols-7">
         <div className="lg:col-span-4">
-          <AqiChart data={location.historical} />
+            <Card>
+                <CardHeader>
+                    <CardTitle className='flex items-center gap-2'><TrendingUp className="h-5 w-5"/>Weekly AQI Trend</CardTitle>
+                    <CardDescription>Last 7 days of Air Quality Index values.</CardDescription>
+                </CardHeader>
+                <CardContent>
+                    <AqiChart data={location.historical} />
+                </CardContent>
+            </Card>
         </div>
         <div className="lg:col-span-3">
-          <KeyPollutants pollutants={location.pollutants} />
+            <KeyPollutants pollutants={location.pollutants} />
         </div>
       </div>
 
       {isLoading && (
-        <div className="grid gap-8">
+        <div className="grid gap-6 md:gap-8">
             <Card>
                 <CardHeader>
                     <Skeleton className="h-6 w-1/2" />
@@ -107,38 +119,59 @@ export function LocationDetailClient({ location }: LocationDetailClientProps) {
       {predictions && (
         <Card>
           <CardHeader>
-            <CardTitle>3-Day Forecast for {location.state}</CardTitle>
+            <CardTitle className="flex items-center gap-2"><CalendarDays className="h-5 w-5"/>3-Day Forecast</CardTitle>
             <CardDescription>
               This is a predictive model based on regional patterns. Actual values may vary.
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Day</TableHead>
-                  <TableHead className="text-center">Predicted AQI</TableHead>
-                  <TableHead>Summary</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {predictions.predictions.map((prediction, index) => {
-                  const { category, color } = getAqiInfo(prediction.predictedAqi);
-                  return (
-                    <TableRow key={index}>
-                      <TableCell className="font-medium">{prediction.day}</TableCell>
-                      <TableCell className="text-center">
-                        <div className="flex flex-col items-center gap-1">
-                            <span className="text-2xl font-bold">{prediction.predictedAqi}</span>
-                            <Badge className={cn("text-white text-xs", color)}>{category}</Badge>
-                        </div>
-                      </TableCell>
-                      <TableCell className="text-muted-foreground">{prediction.summary}</TableCell>
-                    </TableRow>
-                  );
-                })}
-              </TableBody>
-            </Table>
+            {/* Hidden on mobile, shown on md screens and up */}
+            <div className="hidden md:block">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Day</TableHead>
+                    <TableHead className="text-center">Predicted AQI</TableHead>
+                    <TableHead>Summary</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {predictions.predictions.map((prediction, index) => {
+                    const { category, color } = getAqiInfo(prediction.predictedAqi);
+                    return (
+                      <TableRow key={index}>
+                        <TableCell className="font-medium">{prediction.day}</TableCell>
+                        <TableCell className="text-center">
+                          <div className="flex flex-col items-center gap-1">
+                              <span className="text-2xl font-bold">{prediction.predictedAqi}</span>
+                              <Badge className={cn("text-white text-xs", color)}>{category}</Badge>
+                          </div>
+                        </TableCell>
+                        <TableCell className="text-muted-foreground">{prediction.summary}</TableCell>
+                      </TableRow>
+                    );
+                  })}
+                </TableBody>
+              </Table>
+            </div>
+             {/* Shown on mobile, hidden on md screens and up */}
+            <div className="space-y-4 md:hidden">
+              {predictions.predictions.map((prediction, index) => {
+                const { category, color } = getAqiInfo(prediction.predictedAqi);
+                return (
+                  <div key={index} className="p-4 rounded-lg border bg-muted/50 flex flex-col gap-3">
+                    <div className="flex justify-between items-center">
+                      <p className="font-bold text-lg">{prediction.day}</p>
+                       <div className="flex flex-col items-end gap-1">
+                        <span className="text-3xl font-bold">{prediction.predictedAqi}</span>
+                        <Badge className={cn("text-white text-xs", color)}>{category}</Badge>
+                      </div>
+                    </div>
+                    <p className="text-sm text-muted-foreground">{prediction.summary}</p>
+                  </div>
+                )
+              })}
+            </div>
           </CardContent>
         </Card>
       )}
