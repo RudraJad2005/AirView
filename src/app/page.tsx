@@ -1,9 +1,9 @@
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { ArrowRight, BrainCircuit, ShieldCheck, Wind } from "lucide-react";
-import Image from "next/image";
 import { NationalAqiSnapshot } from "@/components/national-aqi-snapshot";
 import { Card, CardContent } from "@/components/ui/card";
+import { CurrentLocationAqi } from "@/components/home/current-location-aqi";
 
 export default function HomePage() {
   return (
@@ -32,14 +32,7 @@ export default function HomePage() {
       </section>
 
       <section className="relative container mx-auto px-4">
-        <Image
-          src="https://placehold.co/1200x600.png"
-          alt="Map of India showing various AQI data points"
-          width={1200}
-          height={600}
-          className="rounded-xl shadow-2xl"
-          data-ai-hint="India map city lights"
-        />
+        <CurrentLocationAqi />
       </section>
 
       <section className="container mx-auto px-4">
