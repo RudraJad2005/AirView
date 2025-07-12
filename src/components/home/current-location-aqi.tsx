@@ -13,6 +13,15 @@ import { getAqiInfo } from '@/lib/aqi-helpers';
 import { Badge } from '../ui/badge';
 import type { LocationData } from '@/types';
 
+// Extend the Window interface to include the potential Android bridge
+declare global {
+  interface Window {
+    Android?: {
+      requestLocationPermission?: () => void;
+    };
+  }
+}
+
 export function CurrentLocationAqi() {
   const { user } = useAuth();
   const [status, setStatus] = useState<'loading' | 'success' | 'error'>('loading');
@@ -20,16 +29,24 @@ export function CurrentLocationAqi() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    // Automatically trigger location finding on component mount
+    // This function will now handle the entire location-finding process.
     const findLocation = () => {
       if (!user) {
-        setStatus('success'); // Don't show an error, just the login prompt.
+        setStatus('success');
         return;
       }
 
-      if ('geolocation' in navigator) {
-        setStatus('loading');
-        setError(null);
+      if (!navigator.geolocation) {
+        setError("Geolocation is not supported by your browser or device.");
+        setStatus('error');
+        return;
+      }
+      
+      setStatus('loading');
+      setError(null);
+
+      // The core logic to get position, now in its own function.
+      const getPosition = () => {
         navigator.geolocation.getCurrentPosition(
           (position) => {
             const { latitude, longitude } = position.coords;
@@ -50,27 +67,43 @@ export function CurrentLocationAqi() {
           },
           (geoError) => {
             console.error("Geolocation error:", geoError);
-            switch(geoError.code) {
+            let errorMessage = "An unknown error occurred while trying to get your location.";
+             switch(geoError.code) {
               case geoError.PERMISSION_DENIED:
-                setError("Location access was denied. Please enable it in your browser or app settings to see local AQI.");
+                errorMessage = "Location access was denied. Please enable it in your browser or app settings to see local AQI.";
                 break;
               case geoError.POSITION_UNAVAILABLE:
-                setError("Location information is unavailable. Please try again later.");
+                errorMessage = "Location information is unavailable. Please try again later.";
                 break;
               case geoError.TIMEOUT:
-                setError("The request to get user location timed out. Please try again.");
-                break;
-              default:
-                setError("An unknown error occurred while trying to get your location.");
+                errorMessage = "The request to get user location timed out. Please try again.";
                 break;
             }
+            setError(errorMessage);
             setStatus('error');
           },
           { timeout: 10000 }
         );
+      }
+
+      // --- JavaScript Bridge Logic ---
+      // Check if the app is running in the Android WebView with the bridge
+      if (typeof window !== 'undefined' && window.Android?.requestLocationPermission) {
+        console.log("Android bridge detected. Requesting native location permission.");
+        // Call the native permission function provided by the converter.
+        // NOTE: The name 'requestLocationPermission' is an assumption.
+        // You might need to change it to match your converter's API.
+        window.Android.requestLocationPermission();
+
+        // Give the native prompt a moment before calling the web API
+        setTimeout(() => {
+          getPosition();
+        }, 1000);
+
       } else {
-        setError("Geolocation is not supported by your browser or device.");
-        setStatus('error');
+        // If no bridge, proceed with the standard web flow
+        console.log("No Android bridge detected. Using standard web Geolocation.");
+        getPosition();
       }
     };
     
