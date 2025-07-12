@@ -59,7 +59,7 @@ export function LocationDetailClient({ location }: LocationDetailClientProps) {
           </Link>
           <div className='w-full'>
             <h2 className="text-3xl font-bold tracking-tight">{location.city}, {location.state}</h2>
-            <div className="flex items-center gap-2 mt-2">
+            <div className="flex flex-col sm:flex-row sm:items-center gap-2 mt-2">
               <span className="text-5xl font-bold">{location.aqi}</span>
               <Badge className={cn("text-white h-7", color)}>{category}</Badge>
             </div>
