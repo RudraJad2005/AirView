@@ -22,6 +22,9 @@ export default function SettingsLayout({
       { name: 'Terms & Conditions', href: '/settings/terms' },
       { name: 'FAQ', href: '/settings/faq' },
     ],
+    'For Developers': [
+        { name: 'API', href: '/settings/api' },
+    ]
   };
 
   const isLinkActive = (href: string) => {
