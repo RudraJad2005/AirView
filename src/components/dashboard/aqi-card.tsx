@@ -21,14 +21,14 @@ export function AqiCard({ location, onPollutantInfoClick, onSelect, isSelected }
       <Card
         onClick={onSelect}
         className={cn(
-          "cursor-pointer transition-all duration-200 hover:shadow-lg hover:-translate-y-1 h-full",
+          "cursor-pointer transition-all duration-200 hover:shadow-lg hover:-translate-y-1 h-full flex flex-col",
           isSelected && "ring-2 ring-primary"
         )}
       >
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
           <div>
-              <CardTitle className="text-sm font-medium">{location.city}</CardTitle>
-              <CardDescription>{location.state}</CardDescription>
+              <CardTitle className="text-base font-medium">{location.city}</CardTitle>
+              <CardDescription className="text-xs">{location.state}</CardDescription>
           </div>
           <div className="flex items-center">
             <Button variant="ghost" size="icon" className="h-6 w-6" onClick={(e) => { e.stopPropagation(); onPollutantInfoClick(); }}>
@@ -43,11 +43,11 @@ export function AqiCard({ location, onPollutantInfoClick, onSelect, isSelected }
             </Button>
           </div>
         </CardHeader>
-        <CardContent>
+        <CardContent className="flex-grow flex flex-col justify-center">
           <div className="text-5xl font-bold">{location.aqi}</div>
           <div className="flex items-center justify-between text-xs text-muted-foreground mt-1">
             <span>US AQI</span>
-            <Badge className={cn("text-white", color)}>{category}</Badge>
+            <Badge className={cn("text-white text-xs", color)}>{category}</Badge>
           </div>
         </CardContent>
       </Card>

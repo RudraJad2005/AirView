@@ -14,9 +14,9 @@ First, open a terminal in VS Code and install the necessary Node.js packages usi
 npm install
 ```
 
-### 2. Set Up Environment Variables
+### 2. Set Up Environment Variables for Local Development
 
-This project uses both **Google AI** for its generative features and **Firebase** for user authentication. You will need to configure credentials for both services in a `.env` file.
+This project uses both **Google AI** for its generative features and **Firebase** for user authentication. You will need to configure credentials for both services in a `.env` file for local testing.
 
 1.  **Create the file:** If it doesn't already exist, create a new file named `.env` in the root of your project directory.
 
@@ -43,7 +43,21 @@ This project uses both **Google AI** for its generative features and **Firebase*
         NEXT_PUBLIC_FIREBASE_APP_ID=YOUR_APP_ID
         ```
 
-### 3. Run the Development Servers
+### 3. Configure Secrets for Production Deployment (IMPORTANT)
+
+When you deploy your app to Firebase App Hosting, it **does not** use the `.env` file. You must set your `GOOGLE_API_KEY` as a secret in Google Cloud.
+
+**In your local terminal (not in VS Code), run the following command:**
+
+```bash
+gcloud app-hosting secrets grant-access \
+  --secret="GOOGLE_API_KEY" \
+  --backend="breatheeasy-india"
+```
+
+This command securely grants your deployed application access to the Google AI API key.
+
+### 4. Run the Development Servers
 
 This project requires two separate servers running simultaneously: one for the Next.js web app and one for the Genkit AI service. You will need to open two separate terminals in VS Code.
 

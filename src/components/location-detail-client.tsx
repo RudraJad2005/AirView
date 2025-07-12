@@ -52,18 +52,18 @@ export function LocationDetailClient({ location }: LocationDetailClientProps) {
 
   return (
     <div className="space-y-8">
-      <div className="flex items-center justify-between space-y-2">
-        <div>
-          <Link href="/dashboard" className="flex items-center gap-2 text-sm text-muted-foreground hover:text-primary mb-2">
+      <div className="flex flex-col items-start gap-4">
+          <Link href="/dashboard" className="flex items-center gap-2 text-sm text-muted-foreground hover:text-primary">
             <ArrowLeft className="h-4 w-4" />
             Back to Dashboard
           </Link>
-          <h2 className="text-3xl font-bold tracking-tight">{location.city}, {location.state}</h2>
-          <div className="flex items-center gap-2 mt-1">
-            <span className="text-5xl font-bold">{location.aqi}</span>
-            <Badge className={cn("text-white h-7", color)}>{category}</Badge>
+          <div className='w-full'>
+            <h2 className="text-3xl font-bold tracking-tight">{location.city}, {location.state}</h2>
+            <div className="flex items-center gap-2 mt-2">
+              <span className="text-5xl font-bold">{location.aqi}</span>
+              <Badge className={cn("text-white h-7", color)}>{category}</Badge>
+            </div>
           </div>
-        </div>
       </div>
 
       <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-7">

@@ -52,13 +52,13 @@ export function HealthAdvisory() {
           <CardTitle>Health Advisory</CardTitle>
         </CardHeader>
         <CardContent className="space-y-6">
-          <div className="rounded-lg bg-gray-800 p-6 text-white dark:bg-card">
-            <div className="grid grid-cols-2 items-center gap-4">
-              <div className="space-y-2 text-center">
+          <div className="rounded-lg bg-gray-800 p-4 md:p-6 text-white dark:bg-card">
+            <div className="flex flex-col sm:flex-row items-center gap-4">
+              <div className="space-y-2 text-center flex-1">
                 <p className="text-5xl font-bold text-red-500">1</p>
                 <p className="text-sm text-gray-300 dark:text-muted-foreground">cigarettes per day</p>
               </div>
-              <div className="flex items-center justify-center">
+              <div className="flex items-center justify-center flex-1">
                 <Image
                   src="https://placehold.co/150x50.png"
                   alt="Illustration of a lit cigarette"
@@ -69,7 +69,7 @@ export function HealthAdvisory() {
                 />
               </div>
             </div>
-            <div className="mt-4 flex justify-between border-t border-gray-700 pt-4 text-sm dark:border-border">
+            <div className="mt-4 flex flex-col sm:flex-row justify-between border-t border-gray-700 pt-4 text-sm dark:border-border">
               <p className="text-gray-300 dark:text-muted-foreground">Weekly <span className="font-bold text-red-500">7 cigarettes</span></p>
               <p className="text-gray-300 dark:text-muted-foreground">Monthly <span className="font-bold text-red-500">30 cigarettes</span></p>
             </div>
@@ -79,15 +79,15 @@ export function HealthAdvisory() {
             </div>
           </div>
   
-          <p className="text-center text-muted-foreground">
+          <p className="text-center text-muted-foreground text-sm">
             As per the last 24hrs PM2.5 Levels, Breathing in this location is like smoking <span className="font-bold text-foreground">1 cigarettes a day.</span>
           </p>
   
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 md:gap-4">
             {advisoryActions.map((action, index) => (
-              <div key={index} className={`rounded-lg p-4 flex flex-col items-center justify-center space-y-2 text-center ${action.active ? 'bg-primary/10 ring-2 ring-primary' : 'bg-muted'}`}>
+              <div key={index} className={`rounded-lg p-2 md:p-4 flex flex-col items-center justify-center space-y-1 text-center ${action.active ? 'bg-primary/10 ring-2 ring-primary' : 'bg-muted'}`}>
                 {action.icon}
-                <p className="font-semibold text-sm">{action.title}</p>
+                <p className="font-semibold text-xs md:text-sm">{action.title}</p>
                 <p className="text-xs text-muted-foreground">{action.subtitle}</p>
               </div>
             ))}
@@ -100,7 +100,7 @@ export function HealthAdvisory() {
             </p>
           </div>
   
-          <Button size="lg" className="w-full h-16 bg-blue-500 hover:bg-blue-600 text-primary-foreground transition ease-in-out duration-300 hover:-translate-y-1 hover:scale-80">
+          <Button size="lg" className="w-full h-16 bg-blue-500 hover:bg-blue-600 text-primary-foreground transition ease-in-out duration-300 hover:-translate-y-1">
             <div className="flex items-center justify-between w-full">
               <div className="flex items-center gap-3">
                 <HeartPulse className="h-8 w-8" />

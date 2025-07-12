@@ -114,7 +114,7 @@ export default function DashboardPage() {
                 />
             </div>
         </div>
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
           {filteredLocations.length > 0 ? (
             filteredLocations.map((location) => (
               <AqiCard
@@ -126,7 +126,7 @@ export default function DashboardPage() {
               />
             ))
           ) : (
-            <p className="col-span-full text-muted-foreground">No locations found for your search.</p>
+            <p className="col-span-full text-center text-muted-foreground">No locations found for your search.</p>
           )}
         </div>
       </div>
@@ -137,12 +137,12 @@ export default function DashboardPage() {
             <CardDescription>Add up to 5 cities to compare their AQI for the last 7 days.</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-            <div className="flex flex-col sm:flex-row gap-2">
+            <div className="flex flex-wrap items-center gap-2">
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="outline" className="w-full sm:w-auto" disabled={availableForComparison.length === 0}>
+                  <Button variant="outline" className="flex-shrink-0" disabled={availableForComparison.length === 0}>
                     <PlusCircle className="mr-2 h-4 w-4" />
-                     Add City to Compare
+                     Add City
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent className="w-56">
@@ -153,8 +153,7 @@ export default function DashboardPage() {
                   ))}
                 </DropdownMenuContent>
               </DropdownMenu>
-            </div>
-             {comparisonLocations.length > 0 && (
+
               <div className="flex flex-wrap gap-2">
                 {comparisonLocations.map(location => (
                   <div key={location.id} className="flex items-center gap-1.5 rounded-full bg-muted px-3 py-1 text-sm">
@@ -170,7 +169,7 @@ export default function DashboardPage() {
                   </div>
                 ))}
               </div>
-            )}
+            </div>
             <CityComparisonChart locations={comparisonLocations} />
         </CardContent>
       </Card>

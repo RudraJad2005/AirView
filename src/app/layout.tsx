@@ -33,7 +33,7 @@ export default function RootLayout({
           <ErrorDialogProvider>
             <AuthProvider>
               <AppLoadingProvider>
-                <div className="relative flex min-h-screen w-full flex-col overflow-hidden">
+                <div className="relative flex min-h-screen w-full flex-col overflow-x-hidden">
                   <AppHeader />
                   <main className="flex-1 p-4 pb-24 md:p-8 md:pb-24">
                     {children}
