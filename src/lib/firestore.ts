@@ -14,6 +14,10 @@ interface UserDoc {
  * @returns A promise that resolves to an array of LocationData objects.
  */
 export async function getSavedLocations(userId: string): Promise<LocationData[]> {
+  if (!db) {
+    console.error("Firestore is not initialized.");
+    return [];
+  }
   const userDocRef = doc(db, 'users', userId);
   const userDocSnap = await getDoc(userDocRef);
 
@@ -36,6 +40,9 @@ export async function getSavedLocations(userId: string): Promise<LocationData[]>
  * @param locationId The ID of the location to add.
  */
 export async function addSavedLocation(userId: string, locationId: string): Promise<void> {
+  if (!db) {
+    throw new Error("Firestore is not initialized.");
+  }
   const userDocRef = doc(db, 'users', userId);
   
   // Use set with merge:true. This will create the document if it doesn't exist,
@@ -51,6 +58,9 @@ export async function addSavedLocation(userId: string, locationId: string): Prom
  * @param locationId The ID of the location to remove.
  */
 export async function removeSavedLocation(userId: string, locationId: string): Promise<void> {
+  if (!db) {
+    throw new Error("Firestore is not initialized.");
+  }
   const userDocRef = doc(db, 'users', userId);
   await updateDoc(userDocRef, {
     savedLocations: arrayRemove(locationId)
