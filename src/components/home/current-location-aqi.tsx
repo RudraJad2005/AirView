@@ -22,6 +22,7 @@ export function CurrentLocationAqi() {
   const handleFindLocation = () => {
     if ('geolocation' in navigator) {
       setStatus('loading');
+      setError(null);
       navigator.geolocation.getCurrentPosition(
         (position) => {
           const { latitude, longitude } = position.coords;
@@ -42,12 +43,26 @@ export function CurrentLocationAqi() {
         },
         (geoError) => {
           console.error("Geolocation error:", geoError);
-          setError("Permission to access location was denied. Please enable it in your browser settings to see local AQI.");
+          switch(geoError.code) {
+            case geoError.PERMISSION_DENIED:
+              setError("Location access was denied. Please enable it in your browser or app settings to see local AQI.");
+              break;
+            case geoError.POSITION_UNAVAILABLE:
+              setError("Location information is unavailable. Please try again later.");
+              break;
+            case geoError.TIMEOUT:
+              setError("The request to get user location timed out. Please try again.");
+              break;
+            default:
+              setError("An unknown error occurred while trying to get your location.");
+              break;
+          }
           setStatus('error');
-        }
+        },
+        { timeout: 10000 } // Add a 10-second timeout
       );
     } else {
-      setError("Geolocation is not supported by your browser.");
+      setError("Geolocation is not supported by your browser or device.");
       setStatus('error');
     }
   };
