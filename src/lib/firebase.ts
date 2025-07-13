@@ -1,7 +1,7 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp, getApps, getApp, type FirebaseApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
-import { getFirestore } from "firebase/firestore";
+import { getFirestore, enableIndexedDbPersistence } from "firebase/firestore";
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -12,27 +12,39 @@ const firebaseConfig = {
   appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
 };
 
-// Initialize Firebase
 let app: FirebaseApp;
+let auth;
+let db;
 
-// Check if all required environment variables are present
-const allVarsPresent = Object.values(firebaseConfig).every(value => !!value);
-
-if (!getApps().length && allVarsPresent) {
-  app = initializeApp(firebaseConfig);
-} else if (allVarsPresent) {
-  app = getApp();
+// Check if all required environment variables are present on the client
+if (typeof window !== 'undefined' && Object.values(firebaseConfig).every(Boolean)) {
+  app = getApps().length ? getApp() : initializeApp(firebaseConfig);
+  auth = getAuth(app);
+  db = getFirestore(app);
+  // Enable offline persistence
+  enableIndexedDbPersistence(db).catch((err) => {
+    if (err.code == 'failed-precondition') {
+      // Multiple tabs open, persistence can only be enabled
+      // in one tab at a time.
+      console.warn('Firestore persistence failed: failed-precondition. Multiple tabs open?');
+    } else if (err.code == 'unimplemented') {
+      // The current browser does not support all of the
+      // features required to enable persistence
+      console.warn('Firestore persistence failed: unimplemented. Browser not supported.');
+    }
+  });
 } else {
-  // If variables are missing, we're likely in a build environment
-  // You can return a mock/dummy app or handle it as needed.
-  // For now, we'll just avoid initializing and let auth/db fail gracefully
-  // on the server during build.
-  console.warn("Firebase environment variables are not fully set. Skipping Firebase initialization during build.");
+    // On the server or if env vars are missing, we can provide null or mock objects.
+    // For this app, auth/db are only used on the client, so this is safe.
+    if (getApps().length === 0) {
+        // To prevent crashes on server-side rendering where env vars might be read
+        // but we don't intend to connect.
+        app = initializeApp(firebaseConfig);
+    } else {
+        app = getApp();
+    }
+    auth = getAuth(app);
+    db = getFirestore(app);
 }
-
-// Ensure you are exporting initialized services only if the app was initialized.
-const auth = app! ? getAuth(app) : null;
-const db = app! ? getFirestore(app) : null;
-
 
 export { app, auth, db };
