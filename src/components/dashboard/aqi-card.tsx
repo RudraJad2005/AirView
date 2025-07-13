@@ -21,8 +21,8 @@ export function AqiCard({ location, onPollutantInfoClick, onSelect, isSelected }
       <Card
         onClick={onSelect}
         className={cn(
-          "cursor-pointer transition-all duration-200 hover:shadow-lg hover:-translate-y-1 h-full flex flex-col",
-          isSelected && "ring-2 ring-primary"
+          "cursor-pointer transition-colors duration-200 h-full flex flex-col",
+          isSelected ? "ring-2 ring-primary" : "border"
         )}
       >
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
