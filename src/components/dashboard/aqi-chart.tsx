@@ -22,24 +22,17 @@ const chartConfig = {
 } satisfies ChartConfig;
 
 export function AqiChart({ data }: AqiChartProps) {
-  const [containerRef, { width }] = ResizeObserver();
-
   return (
-    <div 
-      ref={containerRef}
-      className="w-full h-[250px] md:h-[300px] min-w-[300px] overflow-hidden"
-    >
+    <div className="w-full h-[250px] md:h-[300px]">
       <ChartContainer config={chartConfig} className="h-full w-full">
-        {width && (
+        <ResponsiveContainer>
           <LineChart
             accessibilityLayer
             data={data}
-            width={width}
-            height={300} // Fixed height works with responsive width
             margin={{
               top: 10,
               right: 20,
-              left: 10,
+              left: 0,
               bottom: 10,
             }}
           >
@@ -49,7 +42,7 @@ export function AqiChart({ data }: AqiChartProps) {
               tickLine={false}
               axisLine={false}
               tickMargin={8}
-              interval={width < 400 ? 3 : 1} // Dynamic interval based on width
+              interval="preserveStartEnd"
             />
             <YAxis
               tickLine={false}
@@ -67,12 +60,11 @@ export function AqiChart({ data }: AqiChartProps) {
               type="monotone"
               stroke="var(--color-aqi)"
               strokeWidth={2}
-              dot={width > 400} // Only show dots on larger screens
+              dot={false}
             />
           </LineChart>
-        )}
+        </ResponsiveContainer>
       </ChartContainer>
     </div>
   );
 }
-
