@@ -1,67 +1,83 @@
 
 'use client';
 
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { getLocationsData } from '@/lib/data';
-import type { LocationData } from '@/types';
 import { getAqiInfo } from '@/lib/aqi-helpers';
-import { cn } from '@/lib/utils';
-import { TrendingUp, TrendingDown, MapPin } from 'lucide-react';
-import Link from 'next/link';
+
+const CustomTooltip = ({ active, payload, label }: any) => {
+  if (active && payload && payload.length) {
+    const { category } = getAqiInfo(payload[0].value);
+    return (
+      <div className="rounded-lg border bg-background p-2 shadow-sm">
+        <p className="font-bold">{`${label}`}</p>
+        <p className="text-sm text-muted-foreground">{`AQI: ${payload[0].value} (${category})`}</p>
+      </div>
+    );
+  }
+  return null;
+};
 
 export function NationalAqiSnapshot() {
   const locations = getLocationsData();
 
-  const sortedByAqi = [...locations].sort((a, b) => a.aqi - b.aqi);
-  const cleanestCities = sortedByAqi.slice(0, 5);
-  const mostPollutedCities = sortedByAqi.slice(-5).reverse();
+  // Get the 10 most polluted cities
+  const mostPollutedCities = [...locations]
+    .sort((a, b) => b.aqi - a.aqi)
+    .slice(0, 10)
+    .reverse(); // Reverse for ascending order in chart display
 
-  const CityListItem = ({ location }: { location: LocationData }) => {
-    const { textColor } = getAqiInfo(location.aqi);
-    return (
-      <li className="flex items-center justify-between py-2 border-b last:border-b-0">
-        <div className="flex items-center gap-3">
-            <MapPin className="h-4 w-4 text-muted-foreground" />
-            <div>
-                <Link href={`/location/${location.id}`} className="font-medium hover:underline">{location.city}</Link>
-                <p className="text-xs text-muted-foreground">{location.state}</p>
-            </div>
-        </div>
-        <div className={cn("font-bold text-lg", textColor)}>{location.aqi}</div>
-      </li>
-    );
+  const chartData = mostPollutedCities.map(location => ({
+    name: location.city,
+    aqi: location.aqi,
+  }));
+  
+  const getFillColor = (aqi: number) => {
+    const { color } = getAqiInfo(aqi);
+    // The helper returns a tailwind class like `bg-green-500`. We need the hex code or HSL value.
+    // For simplicity, let's map the colors directly here.
+    if (aqi <= 50) return '#22c55e'; // green-500
+    if (aqi <= 100) return '#eab308'; // yellow-500
+    if (aqi <= 150) return '#f97316'; // orange-500
+    if (aqi <= 200) return '#ef4444'; // red-500
+    if (aqi <= 300) return '#a855f7'; // purple-500
+    return '#7f1d1d'; // red-900 (for Hazardous)
   };
+
 
   return (
     <Card>
       <CardHeader>
         <CardTitle>National AQI Snapshot</CardTitle>
         <CardDescription>
-          A glimpse of air quality across major Indian cities today.
+          Air quality across the 10 most polluted major cities today.
         </CardDescription>
       </CardHeader>
-      <CardContent className="grid md:grid-cols-2 gap-8">
-        <div>
-          <h3 className="text-lg font-semibold flex items-center gap-2 mb-4">
-            <TrendingDown className="h-5 w-5 text-green-500" />
-            Cleanest Cities
-          </h3>
-          <ul className="space-y-2">
-            {cleanestCities.map((location) => (
-              <CityListItem key={location.id} location={location} />
-            ))}
-          </ul>
-        </div>
-        <div>
-          <h3 className="text-lg font-semibold flex items-center gap-2 mb-4">
-            <TrendingUp className="h-5 w-5 text-red-500" />
-            Most Polluted Cities
-          </h3>
-          <ul className="space-y-2">
-            {mostPollutedCities.map((location) => (
-              <CityListItem key={location.id} location={location} />
-            ))}
-          </ul>
+      <CardContent>
+        <div className="h-[400px] w-full">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart
+                layout="vertical"
+                data={chartData}
+                margin={{
+                  top: 5,
+                  right: 20,
+                  left: 20,
+                  bottom: 5,
+                }}
+              >
+                <CartesianGrid strokeDasharray="3 3" horizontal={false} />
+                <XAxis type="number" domain={[0, 'dataMax + 50']} />
+                <YAxis dataKey="name" type="category" width={80} tickLine={false} axisLine={false} />
+                <Tooltip content={<CustomTooltip />} cursor={{fill: 'hsl(var(--muted))'}}/>
+                <Bar dataKey="aqi" radius={[0, 4, 4, 0]}>
+                    {chartData.map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={getFillColor(entry.aqi)} />
+                    ))}
+                </Bar>
+              </BarChart>
+            </ResponsiveContainer>
         </div>
       </CardContent>
     </Card>
