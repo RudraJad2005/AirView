@@ -16,6 +16,7 @@ export default function LocationSettingsPage() {
   const { user } = useAuth();
   const [savedLocations, setSavedLocations] = useState<LocationData[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isUpdating, setIsUpdating] = useState(false);
   const { showError } = useErrorDialog();
   const allLocations = getLocationsData();
 
@@ -34,32 +35,42 @@ export default function LocationSettingsPage() {
   }, [user, showError]);
 
   useEffect(() => {
-    fetchSavedLocations();
-  }, [fetchSavedLocations]);
+    if (user) {
+      fetchSavedLocations();
+    } else {
+      setIsLoading(false);
+    }
+  }, [user, fetchSavedLocations]);
 
   const handleAddLocation = async (locationId: string) => {
-    if (!user) return;
+    if (!user || isUpdating) return;
     if (savedLocations.some(l => l.id === locationId)) {
         showError('Already Saved', 'This location is already in your saved list.');
         return;
     }
+    setIsUpdating(true);
     try {
       await addSavedLocation(user.uid, locationId);
       await fetchSavedLocations(); // Re-fetch to update the list
     } catch (error) {
       console.error('Error adding location:', error);
-      showError('Save Error', 'Could not save the new location.');
+      showError('Save Error', 'Could not save the new location. Please check your connection and try again.');
+    } finally {
+      setIsUpdating(false);
     }
   };
 
   const handleRemoveLocation = async (locationId: string) => {
-    if (!user) return;
+    if (!user || isUpdating) return;
+    setIsUpdating(true);
     try {
       await removeSavedLocation(user.uid, locationId);
       await fetchSavedLocations(); // Re-fetch to update the list
     } catch (error) {
       console.error('Error removing location:', error);
       showError('Delete Error', 'Could not remove the location.');
+    } finally {
+      setIsUpdating(false);
     }
   };
   
@@ -67,7 +78,7 @@ export default function LocationSettingsPage() {
     (l) => !savedLocations.some((sl) => sl.id === l.id)
   );
 
-  if (!user) {
+  if (!user && !isLoading) {
     return (
         <div className="space-y-6">
             <div>
@@ -99,6 +110,7 @@ export default function LocationSettingsPage() {
           {isLoading ? (
             <div className="flex items-center justify-center p-4">
               <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+              <span className="sr-only">Loading saved locations...</span>
             </div>
           ) : savedLocations.length > 0 ? (
             savedLocations.map((location) => (
@@ -107,7 +119,7 @@ export default function LocationSettingsPage() {
                   <MapPin className="h-5 w-5 text-muted-foreground" />
                   <span>{location.city}, {location.state}</span>
                 </div>
-                <Button variant="ghost" size="icon" onClick={() => handleRemoveLocation(location.id)}>
+                <Button variant="ghost" size="icon" onClick={() => handleRemoveLocation(location.id)} disabled={isUpdating}>
                   <Trash2 className="h-4 w-4 text-destructive" />
                 </Button>
               </div>
@@ -118,14 +130,14 @@ export default function LocationSettingsPage() {
 
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-                <Button className="w-full" variant="outline">
-                    <PlusCircle className="mr-2 h-4 w-4"/>
+                <Button className="w-full" variant="outline" disabled={isUpdating}>
+                    {isUpdating ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <PlusCircle className="mr-2 h-4 w-4"/>}
                     Add New Location
                 </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent className="w-56">
                 {availableLocations.map(location => (
-                    <DropdownMenuItem key={location.id} onSelect={() => handleAddLocation(location.id)}>
+                    <DropdownMenuItem key={location.id} onSelect={() => handleAddLocation(location.id)} disabled={isUpdating}>
                         {location.city}, {location.state}
                     </DropdownMenuItem>
                 ))}
