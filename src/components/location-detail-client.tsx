@@ -4,7 +4,7 @@
 import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { ShieldCheck, Leaf, HeartPulse, Wind, ArrowLeft, TrendingUp, CalendarDays, Atom } from 'lucide-react';
+import { ShieldCheck, Leaf, HeartPulse, Wind, ArrowLeft, TrendingUp, CalendarDays, Atom, TestTube2, History } from 'lucide-react';
 import { predictAqi, AqiPredictionOutput } from '@/ai/flows/aqi-prediction-flow';
 import { getAqiGuidance, AqiGuidanceOutput } from '@/ai/flows/aqi-guidance-flow';
 import { useErrorDialog } from '@/hooks/use-error-dialog';
@@ -14,9 +14,9 @@ import { cn } from '@/lib/utils';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { Skeleton } from './ui/skeleton';
 import type { LocationData } from '@/types';
-import { AqiChart } from '@/components/dashboard/aqi-chart';
-import { KeyPollutants } from '@/components/dashboard/key-pollutants';
 import Link from 'next/link';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Progress } from "@/components/ui/progress"
 
 interface LocationDetailClientProps {
   location: LocationData;
@@ -51,6 +51,14 @@ export function LocationDetailClient({ location }: LocationDetailClientProps) {
 
   const { category, color } = getAqiInfo(location.aqi);
 
+  const getPollutantProgress = (value: number) => {
+    if (value <= 50) return value * 2; // Good
+    if (value <= 100) return value; // Moderate
+    if (value <= 150) return (value / 150) * 100; // Unhealthy for Sensitive
+    if (value <= 200) return (value / 200) * 100; // Unhealthy
+    return Math.min(100, (value / 300) * 100); // Very Unhealthy / Hazardous
+  }
+
   return (
     <div className="space-y-6 md:space-y-8">
       <div className="flex flex-col items-start gap-4">
@@ -70,22 +78,63 @@ export function LocationDetailClient({ location }: LocationDetailClientProps) {
           </div>
       </div>
 
-      <div className="grid gap-6 md:gap-8 lg:grid-cols-7">
-        <div className="lg:col-span-4">
-            <Card>
-                <CardHeader>
-                    <CardTitle className='flex items-center gap-2'><TrendingUp className="h-5 w-5"/>Weekly AQI Trend</CardTitle>
-                    <CardDescription>Last 7 days of Air Quality Index values.</CardDescription>
-                </CardHeader>
-                <CardContent className="pr-4 pt-2">
-                    <AqiChart data={location.historical} />
-                </CardContent>
-            </Card>
-        </div>
-        <div className="lg:col-span-3">
-            <KeyPollutants pollutants={location.pollutants} />
-        </div>
-      </div>
+       <Card>
+        <CardHeader>
+          <CardTitle>Data Overview</CardTitle>
+          <CardDescription>
+            Detailed pollutant levels and historical data for {location.city}.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <Tabs defaultValue="pollutants" className="w-full">
+            <TabsList className="grid w-full grid-cols-2">
+              <TabsTrigger value="pollutants">
+                <TestTube2 className="mr-2 h-4 w-4" />
+                Pollutants
+              </TabsTrigger>
+              <TabsTrigger value="historical">
+                <History className="mr-2 h-4 w-4" />
+                Historical
+              </TabsTrigger>
+            </TabsList>
+            <TabsContent value="pollutants" className="mt-4">
+              <div className="space-y-4">
+                {location.pollutants.map((p) => (
+                  <div key={p.name} className="space-y-1">
+                    <div className="flex justify-between items-baseline">
+                      <p className="text-sm font-medium text-muted-foreground">{p.name}</p>
+                      <p className="text-sm font-bold">{p.value}</p>
+                    </div>
+                    <Progress value={getPollutantProgress(p.value)} className="h-2" />
+                  </div>
+                ))}
+              </div>
+            </TabsContent>
+            <TabsContent value="historical">
+               <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Day</TableHead>
+                    <TableHead className="text-right">AQI</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {location.historical.map((h, index) => {
+                     const { textColor } = getAqiInfo(h.aqi);
+                     return (
+                        <TableRow key={index}>
+                            <TableCell className="font-medium">{h.date}</TableCell>
+                            <TableCell className={cn("text-right font-bold", textColor)}>{h.aqi}</TableCell>
+                        </TableRow>
+                     )
+                  })}
+                </TableBody>
+              </Table>
+            </TabsContent>
+          </Tabs>
+        </CardContent>
+      </Card>
+
 
       {isLoading && (
         <div className="grid gap-6 md:gap-8">
