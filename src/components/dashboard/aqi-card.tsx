@@ -21,7 +21,7 @@ export function AqiCard({ location, onPollutantInfoClick, onSelect, isSelected }
       <Card
         onClick={onSelect}
         className={cn(
-          "cursor-pointer transition-colors duration-200 h-full flex flex-col",
+          "cursor-pointer transition-colors duration-200 h-full flex flex-col shadow-lg",
           isSelected ? "ring-2 ring-primary" : "border"
         )}
       >
