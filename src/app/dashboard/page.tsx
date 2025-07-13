@@ -15,14 +15,6 @@ import { Input } from '@/components/ui/input';
 import { CityComparisonChart } from '@/components/dashboard/city-comparison-chart';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useErrorDialog } from '@/hooks/use-error-dialog';
-import Autoplay from "embla-carousel-autoplay";
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
-} from "@/components/ui/carousel"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -40,9 +32,6 @@ export default function DashboardPage() {
 
   const [comparisonLocations, setComparisonLocations] = useState<LocationData[]>([allLocations[0]]);
   const { showError } = useErrorDialog();
-  const plugin = useRef(
-    Autoplay({ delay: 2000, stopOnInteraction: true, playOnInit: true })
-  );
 
   const handleSelectLocation = useCallback((location: LocationData) => {
     setSelectedLocation(location);
@@ -77,6 +66,25 @@ export default function DashboardPage() {
   
   const availableForComparison = allLocations.filter(
     l => !comparisonLocations.some(cL => cL.id === l.id)
+  );
+
+  const MarqueeContent = () => (
+    <>
+      {filteredLocations.length > 0 ? (
+        filteredLocations.map((location) => (
+          <div key={location.id} className="flex-shrink-0 w-64 px-2">
+            <AqiCard
+              location={location}
+              isSelected={selectedLocation.id === location.id}
+              onSelect={() => handleSelectLocation(location)}
+              onPollutantInfoClick={() => handlePollutantInfoClick(location)}
+            />
+          </div>
+        ))
+      ) : (
+        <p className="w-full text-center text-muted-foreground">No locations found for your search.</p>
+      )}
+    </>
   );
 
   return (
@@ -120,35 +128,12 @@ export default function DashboardPage() {
                 />
             </div>
         </div>
-        <Carousel
-          opts={{
-            align: "start",
-            loop: true,
-          }}
-          plugins={[plugin.current]}
-          onMouseEnter={() => plugin.current.stop()}
-          onMouseLeave={() => plugin.current.play()}
-          className="w-full"
-        >
-          <CarouselContent>
-            {filteredLocations.length > 0 ? (
-              filteredLocations.map((location) => (
-                <CarouselItem key={location.id} className="sm:basis-1/2 md:basis-1/3 lg:basis-1/4">
-                  <AqiCard
-                    location={location}
-                    isSelected={selectedLocation.id === location.id}
-                    onSelect={() => handleSelectLocation(location)}
-                    onPollutantInfoClick={() => handlePollutantInfoClick(location)}
-                  />
-                </CarouselItem>
-              ))
-            ) : (
-              <p className="col-span-full text-center text-muted-foreground w-full">No locations found for your search.</p>
-            )}
-          </CarouselContent>
-          <CarouselPrevious />
-          <CarouselNext />
-        </Carousel>
+        <div className="relative w-full overflow-hidden group">
+          <div className="flex animate-marquee group-hover:pause">
+            <MarqueeContent />
+            <MarqueeContent />
+          </div>
+        </div>
       </div>
       
       <Card>
