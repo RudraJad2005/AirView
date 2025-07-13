@@ -16,6 +16,13 @@ import { CityComparisonChart } from '@/components/dashboard/city-comparison-char
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useErrorDialog } from '@/hooks/use-error-dialog';
 import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel"
+import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
@@ -93,12 +100,8 @@ export default function DashboardPage() {
       </div>
 
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-        <div>
-          <AqiChart data={selectedLocation.historical} />
-        </div>
-        <div>
-          <KeyPollutants pollutants={selectedLocation.pollutants} />
-        </div>
+        <AqiChart data={selectedLocation.historical} />
+        <KeyPollutants pollutants={selectedLocation.pollutants} />
       </div>
 
       <div>
@@ -114,21 +117,31 @@ export default function DashboardPage() {
                 />
             </div>
         </div>
-        <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
-          {filteredLocations.length > 0 ? (
-            filteredLocations.map((location) => (
-              <AqiCard
-                key={location.id}
-                location={location}
-                isSelected={selectedLocation.id === location.id}
-                onSelect={() => handleSelectLocation(location)}
-                onPollutantInfoClick={() => handlePollutantInfoClick(location)}
-              />
-            ))
-          ) : (
-            <p className="col-span-full text-center text-muted-foreground">No locations found for your search.</p>
-          )}
-        </div>
+        <Carousel
+          opts={{
+            align: "start",
+          }}
+          className="w-full"
+        >
+          <CarouselContent>
+            {filteredLocations.length > 0 ? (
+              filteredLocations.map((location) => (
+                <CarouselItem key={location.id} className="sm:basis-1/2 md:basis-1/3 lg:basis-1/4">
+                  <AqiCard
+                    location={location}
+                    isSelected={selectedLocation.id === location.id}
+                    onSelect={() => handleSelectLocation(location)}
+                    onPollutantInfoClick={() => handlePollutantInfoClick(location)}
+                  />
+                </CarouselItem>
+              ))
+            ) : (
+              <p className="col-span-full text-center text-muted-foreground w-full">No locations found for your search.</p>
+            )}
+          </CarouselContent>
+          <CarouselPrevious />
+          <CarouselNext />
+        </Carousel>
       </div>
       
       <Card>
