@@ -4,7 +4,7 @@
 import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { ShieldCheck, Leaf, HeartPulse, Wind, ArrowLeft, TrendingUp, TrendingDown, CalendarDays } from 'lucide-react';
+import { ShieldCheck, Leaf, HeartPulse, Wind, ArrowLeft, TrendingUp, CalendarDays, Atom } from 'lucide-react';
 import { predictAqi, AqiPredictionOutput } from '@/ai/flows/aqi-prediction-flow';
 import { getAqiGuidance, AqiGuidanceOutput } from '@/ai/flows/aqi-guidance-flow';
 import { useErrorDialog } from '@/hooks/use-error-dialog';
@@ -60,9 +60,9 @@ export function LocationDetailClient({ location }: LocationDetailClientProps) {
           </Link>
           <div className='w-full flex flex-col md:flex-row md:items-end md:justify-between gap-2'>
             <h2 className="text-2xl md:text-3xl font-bold tracking-tight">{location.city}, {location.state}</h2>
-            <div className="flex items-end gap-3">
-              <span className="text-5xl md:text-6xl font-bold leading-none">{location.aqi}</span>
-              <div className='flex flex-col items-start'>
+            <div className="flex items-center justify-between w-full md:w-auto md:items-end gap-3">
+              <span className="text-5xl sm:text-6xl font-bold leading-none">{location.aqi}</span>
+              <div className='flex flex-col items-end md:items-start'>
                 <p className="text-sm text-muted-foreground">US AQI</p>
                 <Badge className={cn("text-white h-7", color)}>{category}</Badge>
               </div>
@@ -70,14 +70,14 @@ export function LocationDetailClient({ location }: LocationDetailClientProps) {
           </div>
       </div>
 
-      <div className="grid gap-6 md:gap-8 md:grid-cols-2 lg:grid-cols-7">
+      <div className="grid gap-6 md:gap-8 lg:grid-cols-7">
         <div className="lg:col-span-4">
             <Card>
                 <CardHeader>
                     <CardTitle className='flex items-center gap-2'><TrendingUp className="h-5 w-5"/>Weekly AQI Trend</CardTitle>
                     <CardDescription>Last 7 days of Air Quality Index values.</CardDescription>
                 </CardHeader>
-                <CardContent>
+                <CardContent className="pr-4 pt-2">
                     <AqiChart data={location.historical} />
                 </CardContent>
             </Card>

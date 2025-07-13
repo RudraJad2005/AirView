@@ -31,8 +31,8 @@ export function AqiChart({ data }: AqiChartProps) {
             data={data}
             margin={{
               top: 10,
-              right: 20,
-              left: 0,
+              right: 10,
+              left: -10,
               bottom: 10,
             }}
           >
