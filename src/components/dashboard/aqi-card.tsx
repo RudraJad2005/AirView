@@ -15,7 +15,7 @@ interface AqiCardProps {
 }
 
 export function AqiCard({ location, onPollutantInfoClick, onSelect, isSelected }: AqiCardProps) {
-  const { category, color } = getAqiInfo(location.aqi);
+  const { category, color, textColor } = getAqiInfo(location.aqi);
 
   return (
       <Card
@@ -47,7 +47,7 @@ export function AqiCard({ location, onPollutantInfoClick, onSelect, isSelected }
           <div className="text-5xl font-bold">{location.aqi}</div>
           <div className="flex items-center justify-between text-xs text-muted-foreground mt-1">
             <span>US AQI</span>
-            <Badge className={cn("text-white text-xs", color)}>{category}</Badge>
+            <Badge className={cn("text-xs", color, textColor)}>{category}</Badge>
           </div>
         </CardContent>
       </Card>

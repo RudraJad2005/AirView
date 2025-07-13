@@ -23,7 +23,7 @@ const chartConfig = {
 
 export function AqiChart({ data }: AqiChartProps) {
   return (
-    <div className="w-full h-[250px] md:h-[300px]">
+    <div className="w-full h-[250px] md:h-[300px] border p-4 pl-2 rounded-lg">
       <ChartContainer config={chartConfig} className="h-full w-full">
         <ResponsiveContainer>
           <LineChart

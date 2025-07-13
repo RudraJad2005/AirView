@@ -128,7 +128,7 @@ export default function DashboardPage() {
                 />
             </div>
         </div>
-        <div className="relative w-full overflow-hidden group">
+        <div className="relative pb-4 w-full overflow-hidden group">
           <div className="flex animate-marquee group-hover:pause">
             <MarqueeContent />
             <MarqueeContent />
