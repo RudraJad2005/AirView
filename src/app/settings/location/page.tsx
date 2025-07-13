@@ -33,7 +33,7 @@ export default function LocationSettingsPage() {
     } finally {
       setIsLoading(false);
     }
-  }, [user]);
+  }, [user, showError]);
 
   useEffect(() => {
     if (user) {
@@ -68,11 +68,14 @@ export default function LocationSettingsPage() {
   const handleRemoveLocation = async (locationId: string) => {
     if (!user || isUpdating) return;
     setIsUpdating(true);
+    // Optimistic update: remove from local state immediately
+    const originalLocations = savedLocations;
+    setSavedLocations(prevLocations => prevLocations.filter(l => l.id !== locationId));
     try {
       await removeSavedLocation(user.uid, locationId);
-      // Optimistic update: remove from local state immediately
-      setSavedLocations(prevLocations => prevLocations.filter(l => l.id !== locationId));
     } catch (error) {
+      // If the delete fails, revert the state
+      setSavedLocations(originalLocations);
       console.error('Error removing location:', error);
       showError('Delete Error', 'Could not remove the location.');
     } finally {
@@ -163,4 +166,3 @@ export default function LocationSettingsPage() {
     </div>
   );
 }
-
