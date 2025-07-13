@@ -1,3 +1,5 @@
+"use client";
+
 import {
   Card,
   CardContent,
@@ -12,7 +14,6 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { FileText, ShieldCheck, Wind, AlertTriangle } from "lucide-react";
-import Link from 'next/link';
 import { Button } from "@/components/ui/button";
 
 const SchoolChecklist = [
@@ -32,6 +33,25 @@ const HospitalChecklist = [
 ];
 
 export default function EmergencyResponsePage() {
+  const handleDownload = (type: 'school' | 'hospital') => {
+    const checklist = type === 'school' ? SchoolChecklist : HospitalChecklist;
+    const title = type === 'school' ? 'School Emergency Response Plan Template' : 'Hospital Emergency Response Plan Template';
+    const filename = type === 'school' ? 'School-Response-Plan.txt' : 'Hospital-Response-Plan.txt';
+
+    const content = `${title}\n\nIMMEDIATE ACTION CHECKLIST:\n${checklist.map(item => `- ${item}`).join('\n')}`;
+    
+    const blob = new Blob([content], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
+
   return (
     <div className="space-y-8">
       <div>
@@ -71,11 +91,9 @@ export default function EmergencyResponsePage() {
               </AccordionContent>
             </AccordionItem>
           </Accordion>
-          <Button asChild variant="outline">
-            <Link href="/#" target="_blank">
-                <FileText className="mr-2" />
-                Download School Response Plan Template
-            </Link>
+          <Button variant="outline" onClick={() => handleDownload('school')}>
+            <FileText className="mr-2" />
+            Download School Response Plan Template
           </Button>
         </CardContent>
       </Card>
@@ -107,11 +125,9 @@ export default function EmergencyResponsePage() {
               </AccordionContent>
             </AccordionItem>
           </Accordion>
-          <Button asChild variant="outline">
-            <Link href="/#" target="_blank">
-                <FileText className="mr-2" />
-                Download Hospital Response Plan Template
-            </Link>
+          <Button variant="outline" onClick={() => handleDownload('hospital')}>
+            <FileText className="mr-2" />
+            Download Hospital Response Plan Template
           </Button>
         </CardContent>
       </Card>
