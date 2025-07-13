@@ -4,12 +4,30 @@
 import { ComposedChart, Bar, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { getLocationsData } from '@/lib/data';
-import { ChartTooltipContent } from '@/components/ui/chart';
+import { ChartContainer, ChartTooltipContent, type ChartConfig } from '@/components/ui/chart';
+
+const chartConfig = {
+  aqi: {
+    label: 'Overall AQI',
+    color: 'hsl(var(--primary))',
+  },
+  PM25: {
+    label: 'PM2.5',
+    color: 'hsl(var(--chart-2))',
+  },
+  PM10: {
+    label: 'PM10',
+    color: 'hsl(var(--chart-3))',
+  },
+  O3: {
+    label: 'Ozone (O3)',
+    color: 'hsl(var(--chart-4))',
+  },
+} satisfies ChartConfig;
 
 export function NationalAqiSnapshot() {
   const locations = getLocationsData();
 
-  // Get the 10 most polluted cities
   const mostPollutedCities = [...locations]
     .sort((a, b) => b.aqi - a.aqi)
     .slice(0, 10);
@@ -17,7 +35,7 @@ export function NationalAqiSnapshot() {
   const chartData = mostPollutedCities.map(location => {
     const pollutantsData: {[key: string]: number} = {};
     location.pollutants.forEach(p => {
-        pollutantsData[p.name.replace('.', '')] = p.value; // recharts doesn't like dots in keys
+        pollutantsData[p.name.replace('.', '')] = p.value;
     });
     return {
         name: location.city,
@@ -36,7 +54,8 @@ export function NationalAqiSnapshot() {
       </CardHeader>
       <CardContent>
         <div className="h-[450px] w-full">
-            <ResponsiveContainer width="100%" height="100%">
+          <ChartContainer config={chartConfig} className="w-full h-full">
+            <ResponsiveContainer>
               <ComposedChart
                 data={chartData}
                 margin={{
@@ -51,12 +70,13 @@ export function NationalAqiSnapshot() {
                 <YAxis />
                 <Tooltip content={<ChartTooltipContent />} />
                 <Legend />
-                <Bar dataKey="aqi" barSize={20} fill="hsl(var(--primary))" name="Overall AQI" />
-                <Line type="monotone" dataKey="PM25" stroke="hsl(var(--chart-2))" name="PM2.5" />
-                <Line type="monotone" dataKey="PM10" stroke="hsl(var(--chart-3))" name="PM10" />
-                <Line type="monotone" dataKey="O3" stroke="hsl(var(--chart-4))" name="Ozone (O3)" />
+                <Bar dataKey="aqi" barSize={20} fill="var(--color-aqi)" />
+                <Line type="monotone" dataKey="PM25" stroke="var(--color-PM25)" />
+                <Line type="monotone" dataKey="PM10" stroke="var(--color-PM10)" />
+                <Line type="monotone" dataKey="O3" stroke="var(--color-O3)" />
               </ComposedChart>
             </ResponsiveContainer>
+          </ChartContainer>
         </div>
       </CardContent>
     </Card>
