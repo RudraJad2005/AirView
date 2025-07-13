@@ -2,39 +2,46 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { ArrowRight, BrainCircuit, ShieldCheck, Wind } from "lucide-react";
 import { NationalAqiSnapshot } from "@/components/national-aqi-snapshot";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { CurrentLocationAqi } from "@/components/home/current-location-aqi";
 
 export default function HomePage() {
   return (
     <div className="flex flex-col gap-12 md:gap-16 lg:gap-20">
-      <section className="text-center">
-        <div className="container mx-auto px-4">
-          <div className="mx-auto max-w-3xl">
+      
+      {/* --- Hero Section with Integrated Local AQI --- */}
+      <section className="container mx-auto px-4">
+        <div className="grid lg:grid-cols-2 gap-12 items-center">
+          <div className="text-center lg:text-left">
             <h1 className="text-4xl font-extrabold tracking-tight lg:text-5xl xl:text-6xl">
               Clearer Skies, Healthier Lives.
             </h1>
             <p className="mt-4 text-lg text-muted-foreground sm:text-xl">
               BreatheEasy provides real-time air quality data, AI-powered forecasts, and personalized health advice for all of India.
             </p>
+            <div className="mt-8 flex flex-col sm:flex-row justify-center lg:justify-start gap-4">
+              <Button asChild size="lg">
+                <Link href="/dashboard">
+                  View Live Dashboard <ArrowRight className="ml-2" />
+                </Link>
+              </Button>
+              <Button asChild size="lg" variant="outline">
+                <Link href="/analytics">Explore AI Analytics</Link>
+              </Button>
+            </div>
           </div>
-          <div className="mt-8 flex justify-center gap-4">
-            <Button asChild size="lg">
-              <Link href="/dashboard">
-                View Live Dashboard <ArrowRight className="ml-2" />
-              </Link>
-            </Button>
-            <Button asChild size="lg" variant="outline">
-              <Link href="/analytics">Explore AI Analytics</Link>
-            </Button>
+          <div className="w-full">
+             <CurrentLocationAqi />
           </div>
         </div>
       </section>
 
-      <section className="relative container mx-auto px-4">
-        <CurrentLocationAqi />
+      {/* --- National AQI Snapshot --- */}
+      <section className="container mx-auto px-4">
+        <NationalAqiSnapshot />
       </section>
 
+      {/* --- Features Section --- */}
       <section className="container mx-auto px-4">
         <div className="text-center mb-12">
           <h2 className="text-3xl font-bold tracking-tight">Features at a Glance</h2>
@@ -43,40 +50,43 @@ export default function HomePage() {
           </p>
         </div>
         <div className="grid gap-8 md:grid-cols-3">
-          <div className="flex flex-col items-center text-center">
-            <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-primary/10">
-              <Wind className="h-8 w-8 text-primary" />
-            </div>
-            <h3 className="text-xl font-semibold">Real-Time AQI Data</h3>
-            <p className="mt-2 text-muted-foreground">
-              Access up-to-the-minute Air Quality Index readings from cities across India.
-            </p>
-          </div>
-          <div className="flex flex-col items-center text-center">
-            <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-primary/10">
-              <BrainCircuit className="h-8 w-8 text-primary" />
-            </div>
-            <h3 className="text-xl font-semibold">AI-Powered Forecasts</h3>
-            <p className="mt-2 text-muted-foreground">
-              Get predictive insights into future air quality trends to plan your activities.
-            </p>
-          </div>
-          <div className="flex flex-col items-center text-center">
-            <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-primary/10">
-              <ShieldCheck className="h-8 w-8 text-primary" />
-            </div>
-            <h3 className="text-xl font-semibold">Personalized Health Advice</h3>
-            <p className="mt-2 text-muted-foreground">
-              Receive tailored recommendations based on your health profile and local AQI.
-            </p>
-          </div>
+          <Card>
+            <CardHeader className="items-center text-center">
+              <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-primary/10">
+                <Wind className="h-8 w-8 text-primary" />
+              </div>
+              <CardTitle className="text-xl">Real-Time AQI Data</CardTitle>
+            </CardHeader>
+            <CardContent className="text-center text-muted-foreground">
+              <p>Access up-to-the-minute Air Quality Index readings from cities across India.</p>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader className="items-center text-center">
+              <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-primary/10">
+                <BrainCircuit className="h-8 w-8 text-primary" />
+              </div>
+              <CardTitle className="text-xl">AI-Powered Forecasts</CardTitle>
+            </CardHeader>
+            <CardContent className="text-center text-muted-foreground">
+              <p>Get predictive insights into future air quality trends to plan your activities.</p>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader className="items-center text-center">
+              <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-primary/10">
+                <ShieldCheck className="h-8 w-8 text-primary" />
+              </div>
+              <CardTitle className="text-xl">Personalized Health Advice</CardTitle>
+            </CardHeader>
+            <CardContent className="text-center text-muted-foreground">
+              <p>Receive tailored recommendations based on your health profile and local AQI.</p>
+            </CardContent>
+          </Card>
         </div>
       </section>
 
-      <section className="container mx-auto px-4">
-        <NationalAqiSnapshot />
-      </section>
-
+      {/* --- Final CTA Section --- */}
       <section>
         <Card className="bg-primary text-primary-foreground">
           <CardContent className="p-8 md:p-12 text-center">
