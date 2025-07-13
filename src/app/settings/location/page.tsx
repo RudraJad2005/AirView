@@ -7,7 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { MapPin, Trash2, Loader2, PlusCircle } from 'lucide-react';
 import { useAuth } from '@/components/layout/auth-provider';
 import { getSavedLocations, addSavedLocation, removeSavedLocation } from '@/lib/firestore';
-import { getLocationsData } from '@/lib/data';
+import { getLocationsData, getLocationById } from '@/lib/data';
 import type { LocationData } from '@/types';
 import { useErrorDialog } from '@/hooks/use-error-dialog';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
@@ -33,7 +33,7 @@ export default function LocationSettingsPage() {
     } finally {
       setIsLoading(false);
     }
-  }, [user, showError]);
+  }, [user]);
 
   useEffect(() => {
     if (user) {
@@ -52,7 +52,11 @@ export default function LocationSettingsPage() {
     setAddingLocationId(locationId);
     try {
       await addSavedLocation(user.uid, locationId);
-      await fetchSavedLocations(); // Re-fetch to update the list
+      // Optimistic update: add to local state immediately
+      const newLocation = getLocationById(locationId);
+      if (newLocation) {
+        setSavedLocations(prevLocations => [...prevLocations, newLocation]);
+      }
     } catch (error) {
       console.error('Error adding location:', error);
       showError('Save Error', 'Could not save the new location. Please check your connection and try again.');
@@ -66,7 +70,8 @@ export default function LocationSettingsPage() {
     setIsUpdating(true);
     try {
       await removeSavedLocation(user.uid, locationId);
-      await fetchSavedLocations(); // Re-fetch to update the list
+      // Optimistic update: remove from local state immediately
+      setSavedLocations(prevLocations => prevLocations.filter(l => l.id !== locationId));
     } catch (error) {
       console.error('Error removing location:', error);
       showError('Delete Error', 'Could not remove the location.');
@@ -131,13 +136,14 @@ export default function LocationSettingsPage() {
 
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-                <Button className="w-full" variant="outline" disabled={addingLocationId !== null}>
+                <Button className="w-full" variant="outline" disabled={addingLocationId !== null || isUpdating}>
                     {addingLocationId ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <PlusCircle className="mr-2 h-4 w-4"/>}
                     Add New Location
                 </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent className="w-56">
-                {availableLocations.map(location => (
+                {availableLocations.length > 0 ? (
+                  availableLocations.map(location => (
                     <DropdownMenuItem 
                       key={location.id} 
                       onSelect={() => handleAddLocation(location.id)} 
@@ -146,7 +152,10 @@ export default function LocationSettingsPage() {
                       {addingLocationId === location.id ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
                       {location.city}, {location.state}
                     </DropdownMenuItem>
-                ))}
+                  ))
+                ) : (
+                  <DropdownMenuItem disabled>All locations saved</DropdownMenuItem>
+                )}
             </DropdownMenuContent>
           </DropdownMenu>
         </CardContent>
@@ -154,3 +163,4 @@ export default function LocationSettingsPage() {
     </div>
   );
 }
+
