@@ -49,7 +49,7 @@ export function LocationDetailClient({ location }: LocationDetailClientProps) {
     getAnalyticsData();
   }, [location.state, showError]);
 
-  const { category, color } = getAqiInfo(location.aqi);
+  const { category, color, textColor } = getAqiInfo(location.aqi);
 
   const getPollutantProgress = (value: number) => {
     if (value <= 50) return value * 2; // Good
@@ -69,7 +69,7 @@ export function LocationDetailClient({ location }: LocationDetailClientProps) {
           <div className='w-full flex flex-col md:flex-row md:items-end md:justify-between gap-2'>
             <h2 className="text-2xl md:text-3xl font-bold tracking-tight">{location.city}, {location.state}</h2>
             <div className="flex items-center justify-between w-full md:w-auto md:items-end gap-3">
-              <span className="text-5xl sm:text-6xl font-bold leading-none">{location.aqi}</span>
+              <span className={cn("text-5xl sm:text-6xl font-bold leading-none", textColor)}>{location.aqi}</span>
               <div className='flex flex-col items-end md:items-start'>
                 <p className="text-sm text-muted-foreground">US AQI</p>
                 <Badge className={cn("text-white h-7", color)}>{category}</Badge>
@@ -120,11 +120,11 @@ export function LocationDetailClient({ location }: LocationDetailClientProps) {
                 </TableHeader>
                 <TableBody>
                   {location.historical.map((h, index) => {
-                     const { textColor } = getAqiInfo(h.aqi);
+                     const { textColor: historicalTextColor } = getAqiInfo(h.aqi);
                      return (
                         <TableRow key={index}>
                             <TableCell className="font-medium">{h.date}</TableCell>
-                            <TableCell className={cn("text-right font-bold", textColor)}>{h.aqi}</TableCell>
+                            <TableCell className={cn("text-right font-bold", historicalTextColor)}>{h.aqi}</TableCell>
                         </TableRow>
                      )
                   })}
@@ -186,14 +186,14 @@ export function LocationDetailClient({ location }: LocationDetailClientProps) {
                 </TableHeader>
                 <TableBody>
                   {predictions.predictions.map((prediction, index) => {
-                    const { category, color } = getAqiInfo(prediction.predictedAqi);
+                    const { category: predCategory, color: predColor } = getAqiInfo(prediction.predictedAqi);
                     return (
                       <TableRow key={index}>
                         <TableCell className="font-medium">{prediction.day}</TableCell>
                         <TableCell className="text-center">
                           <div className="flex flex-col items-center gap-1">
                               <span className="text-2xl font-bold">{prediction.predictedAqi}</span>
-                              <Badge className={cn("text-white text-xs", color)}>{category}</Badge>
+                              <Badge className={cn("text-white text-xs", predColor)}>{predCategory}</Badge>
                           </div>
                         </TableCell>
                         <TableCell className="text-muted-foreground">{prediction.summary}</TableCell>
@@ -206,14 +206,14 @@ export function LocationDetailClient({ location }: LocationDetailClientProps) {
              {/* Shown on mobile, hidden on md screens and up */}
             <div className="space-y-4 md:hidden">
               {predictions.predictions.map((prediction, index) => {
-                const { category, color } = getAqiInfo(prediction.predictedAqi);
+                const { category: predCategory, color: predColor } = getAqiInfo(prediction.predictedAqi);
                 return (
                   <div key={index} className="p-4 rounded-lg border bg-muted/50 flex flex-col gap-3">
                     <div className="flex justify-between items-center">
                       <p className="font-bold text-lg">{prediction.day}</p>
                        <div className="flex flex-col items-end gap-1">
                         <span className="text-3xl font-bold">{prediction.predictedAqi}</span>
-                        <Badge className={cn("text-white text-xs", color)}>{category}</Badge>
+                        <Badge className={cn("text-white text-xs", predColor)}>{predCategory}</Badge>
                       </div>
                     </div>
                     <p className="text-sm text-muted-foreground">{prediction.summary}</p>
