@@ -32,7 +32,7 @@ export default function LocationSettingsPage() {
     } finally {
       setIsLoading(false);
     }
-  }, [user, showError]);
+  }, [user]);
 
   useEffect(() => {
     if (user) {
