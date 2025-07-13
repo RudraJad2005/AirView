@@ -1,3 +1,4 @@
+
 'use client';
 
 import Link from 'next/link';
@@ -13,7 +14,7 @@ export default function SettingsLayout({
 
   const navItems = {
     'Account': [
-      { name: 'Notifications', href: '/settings' },
+      { name: 'Notifications', href: '/settings', exact: true },
       { name: 'Theme', href: '/settings/theme' },
       { name: 'Location Settings', href: '/settings/location' },
     ],
@@ -27,8 +28,13 @@ export default function SettingsLayout({
     ]
   };
 
-  const isLinkActive = (href: string) => {
-    return pathname === href;
+  const isLinkActive = (href: string, exact: boolean = false) => {
+    if (exact) {
+      return pathname === href;
+    }
+    // For non-exact matches, ensure it's not just the root settings page
+    if (href === '/settings') return false; 
+    return pathname.startsWith(href);
   };
 
   return (
@@ -49,7 +55,7 @@ export default function SettingsLayout({
                     href={item.href}
                     className={cn(
                       'text-foreground hover:bg-muted hover:text-foreground transition-colors px-2 py-1.5 rounded-md text-sm',
-                      isLinkActive(item.href) ? 'bg-muted font-semibold' : 'text-muted-foreground'
+                      isLinkActive(item.href, item.exact) ? 'bg-muted font-semibold' : 'text-muted-foreground'
                     )}
                   >
                     {item.name}
