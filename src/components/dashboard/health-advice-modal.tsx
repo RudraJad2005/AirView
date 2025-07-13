@@ -1,6 +1,7 @@
+
 "use client";
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   Dialog,
   DialogContent,
@@ -34,12 +35,30 @@ interface HealthAdviceModalProps {
 export function HealthAdviceModal({ location, children, open, onOpenChange }: HealthAdviceModalProps) {
   const [healthCondition, setHealthCondition] = useState('none');
   const [advice, setAdvice] = useState<PersonalizedHealthAdviceOutput | null>(null);
+  const [displayedAdvice, setDisplayedAdvice] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const { showError } = useErrorDialog();
+
+  useEffect(() => {
+    if (advice?.advice) {
+      setDisplayedAdvice(''); // Reset before starting
+      let index = 0;
+      const intervalId = setInterval(() => {
+        setDisplayedAdvice((prev) => prev + (advice.advice?.[index] ?? ''));
+        index++;
+        if (index === advice.advice.length) {
+          clearInterval(intervalId);
+        }
+      }, 20); // Adjust speed of typing here
+
+      return () => clearInterval(intervalId);
+    }
+  }, [advice]);
 
   const handleGetAdvice = async () => {
     setIsLoading(true);
     setAdvice(null);
+    setDisplayedAdvice('');
     try {
       const result = await getPersonalizedHealthAdvice({
         aqi: location.aqi,
@@ -84,10 +103,10 @@ export function HealthAdviceModal({ location, children, open, onOpenChange }: He
               </SelectContent>
             </Select>
           </div>
-          {advice && (
-            <div className="mt-4 rounded-lg border bg-muted/50 p-4">
+          {(advice || displayedAdvice) && (
+            <div className="mt-4 rounded-lg border bg-muted/50 p-4 min-h-[100px]">
               <h4 className="font-semibold mb-2 flex items-center gap-2"><Sparkles className="h-4 w-4 text-primary" /> Advice:</h4>
-              <p className="text-sm text-muted-foreground">{advice.advice}</p>
+              <p className="text-sm text-muted-foreground">{displayedAdvice}</p>
             </div>
           )}
         </div>
