@@ -1,3 +1,4 @@
+
 "use client"
 
 import * as React from "react"
@@ -183,12 +184,12 @@ const ChartTooltipContent = React.forwardRef<
           className
         )}
       >
-        {!nestLabel ? tooltipLabel : null}
+        <div className={cn("font-medium", labelClassName)}>{label}</div>
         <div className="grid gap-1.5">
           {payload.map((item, index) => {
             const key = `${nameKey || item.name || item.dataKey || "value"}`
             const itemConfig = getPayloadConfigFromPayload(config, item, key)
-            const indicatorColor = color || item.payload.fill || item.color
+            const indicatorColor = color || item.color || item.payload.fill
 
             return (
               <div

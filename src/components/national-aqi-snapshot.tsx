@@ -1,23 +1,10 @@
 
 'use client';
 
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts';
+import { ComposedChart, Bar, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { getLocationsData } from '@/lib/data';
-import { getAqiInfo } from '@/lib/aqi-helpers';
-
-const CustomTooltip = ({ active, payload, label }: any) => {
-  if (active && payload && payload.length) {
-    const { category } = getAqiInfo(payload[0].value);
-    return (
-      <div className="rounded-lg border bg-background p-2 shadow-sm">
-        <p className="font-bold">{`${label}`}</p>
-        <p className="text-sm text-muted-foreground">{`AQI: ${payload[0].value} (${category})`}</p>
-      </div>
-    );
-  }
-  return null;
-};
+import { ChartTooltipContent } from '@/components/ui/chart';
 
 export function NationalAqiSnapshot() {
   const locations = getLocationsData();
@@ -25,58 +12,50 @@ export function NationalAqiSnapshot() {
   // Get the 10 most polluted cities
   const mostPollutedCities = [...locations]
     .sort((a, b) => b.aqi - a.aqi)
-    .slice(0, 10)
-    .reverse(); // Reverse for ascending order in chart display
+    .slice(0, 10);
 
-  const chartData = mostPollutedCities.map(location => ({
-    name: location.city,
-    aqi: location.aqi,
-  }));
-  
-  const getFillColor = (aqi: number) => {
-    const { color } = getAqiInfo(aqi);
-    // The helper returns a tailwind class like `bg-green-500`. We need the hex code or HSL value.
-    // For simplicity, let's map the colors directly here.
-    if (aqi <= 50) return '#22c55e'; // green-500
-    if (aqi <= 100) return '#eab308'; // yellow-500
-    if (aqi <= 150) return '#f97316'; // orange-500
-    if (aqi <= 200) return '#ef4444'; // red-500
-    if (aqi <= 300) return '#a855f7'; // purple-500
-    return '#7f1d1d'; // red-900 (for Hazardous)
-  };
-
+  const chartData = mostPollutedCities.map(location => {
+    const pollutantsData: {[key: string]: number} = {};
+    location.pollutants.forEach(p => {
+        pollutantsData[p.name.replace('.', '')] = p.value; // recharts doesn't like dots in keys
+    });
+    return {
+        name: location.city,
+        aqi: location.aqi,
+        ...pollutantsData
+    }
+  });
 
   return (
     <Card>
       <CardHeader>
-        <CardTitle>National AQI Snapshot</CardTitle>
+        <CardTitle>National AQI & Pollutant Snapshot</CardTitle>
         <CardDescription>
-          Air quality across the 10 most polluted major cities today.
+          AQI and key pollutant levels for the 10 most polluted major cities today.
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <div className="h-[400px] w-full">
+        <div className="h-[450px] w-full">
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart
-                layout="vertical"
+              <ComposedChart
                 data={chartData}
                 margin={{
-                  top: 5,
+                  top: 20,
                   right: 20,
+                  bottom: 20,
                   left: 20,
-                  bottom: 5,
                 }}
               >
-                <CartesianGrid strokeDasharray="3 3" horizontal={false} />
-                <XAxis type="number" domain={[0, 'dataMax + 50']} />
-                <YAxis dataKey="name" type="category" width={80} tickLine={false} axisLine={false} />
-                <Tooltip content={<CustomTooltip />} cursor={{fill: 'hsl(var(--muted))'}}/>
-                <Bar dataKey="aqi" radius={[0, 4, 4, 0]}>
-                    {chartData.map((entry, index) => (
-                        <Cell key={`cell-${index}`} fill={getFillColor(entry.aqi)} />
-                    ))}
-                </Bar>
-              </BarChart>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="name" tick={{ fontSize: 12 }} angle={-30} textAnchor="end" height={70} />
+                <YAxis />
+                <Tooltip content={<ChartTooltipContent />} />
+                <Legend />
+                <Bar dataKey="aqi" barSize={20} fill="hsl(var(--primary))" name="Overall AQI" />
+                <Line type="monotone" dataKey="PM25" stroke="hsl(var(--chart-2))" name="PM2.5" />
+                <Line type="monotone" dataKey="PM10" stroke="hsl(var(--chart-3))" name="PM10" />
+                <Line type="monotone" dataKey="O3" stroke="hsl(var(--chart-4))" name="Ozone (O3)" />
+              </ComposedChart>
             </ResponsiveContainer>
         </div>
       </CardContent>
