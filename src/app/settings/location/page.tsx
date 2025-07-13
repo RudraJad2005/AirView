@@ -17,6 +17,7 @@ export default function LocationSettingsPage() {
   const [savedLocations, setSavedLocations] = useState<LocationData[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isUpdating, setIsUpdating] = useState(false);
+  const [addingLocationId, setAddingLocationId] = useState<string | null>(null);
   const { showError } = useErrorDialog();
   const allLocations = getLocationsData();
 
@@ -32,7 +33,7 @@ export default function LocationSettingsPage() {
     } finally {
       setIsLoading(false);
     }
-  }, [user]);
+  }, [user, showError]);
 
   useEffect(() => {
     if (user) {
@@ -43,12 +44,12 @@ export default function LocationSettingsPage() {
   }, [user, fetchSavedLocations]);
 
   const handleAddLocation = async (locationId: string) => {
-    if (!user || isUpdating) return;
+    if (!user || addingLocationId) return;
     if (savedLocations.some(l => l.id === locationId)) {
         showError('Already Saved', 'This location is already in your saved list.');
         return;
     }
-    setIsUpdating(true);
+    setAddingLocationId(locationId);
     try {
       await addSavedLocation(user.uid, locationId);
       await fetchSavedLocations(); // Re-fetch to update the list
@@ -56,7 +57,7 @@ export default function LocationSettingsPage() {
       console.error('Error adding location:', error);
       showError('Save Error', 'Could not save the new location. Please check your connection and try again.');
     } finally {
-      setIsUpdating(false);
+      setAddingLocationId(null);
     }
   };
 
@@ -120,7 +121,7 @@ export default function LocationSettingsPage() {
                   <span>{location.city}, {location.state}</span>
                 </div>
                 <Button variant="ghost" size="icon" onClick={() => handleRemoveLocation(location.id)} disabled={isUpdating}>
-                  <Trash2 className="h-4 w-4 text-destructive" />
+                  {isUpdating ? <Loader2 className="h-4 w-4 animate-spin"/> : <Trash2 className="h-4 w-4 text-destructive" />}
                 </Button>
               </div>
             ))
@@ -130,15 +131,20 @@ export default function LocationSettingsPage() {
 
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-                <Button className="w-full" variant="outline" disabled={isUpdating}>
-                    {isUpdating ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <PlusCircle className="mr-2 h-4 w-4"/>}
+                <Button className="w-full" variant="outline" disabled={addingLocationId !== null}>
+                    {addingLocationId ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <PlusCircle className="mr-2 h-4 w-4"/>}
                     Add New Location
                 </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent className="w-56">
                 {availableLocations.map(location => (
-                    <DropdownMenuItem key={location.id} onSelect={() => handleAddLocation(location.id)} disabled={isUpdating}>
-                        {location.city}, {location.state}
+                    <DropdownMenuItem 
+                      key={location.id} 
+                      onSelect={() => handleAddLocation(location.id)} 
+                      disabled={addingLocationId !== null}
+                    >
+                      {addingLocationId === location.id ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
+                      {location.city}, {location.state}
                     </DropdownMenuItem>
                 ))}
             </DropdownMenuContent>
