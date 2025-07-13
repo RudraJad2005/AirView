@@ -1,7 +1,7 @@
 
 'use client';
 
-import { ComposedChart, Bar, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { ComposedChart, Bar, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, Area } from 'recharts';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { getLocationsData } from '@/lib/data';
 import { ChartContainer, ChartTooltipContent, type ChartConfig } from '@/components/ui/chart';
@@ -35,6 +35,7 @@ export function NationalAqiSnapshot() {
   const chartData = mostPollutedCities.map(location => {
     const pollutantsData: {[key: string]: number} = {};
     location.pollutants.forEach(p => {
+        // recharts dataKeys can't have dots
         pollutantsData[p.name.replace('.', '')] = p.value;
     });
     return {
@@ -42,7 +43,7 @@ export function NationalAqiSnapshot() {
         aqi: location.aqi,
         ...pollutantsData
     }
-  });
+  }).reverse(); // Reverse to show highest on the right
 
   return (
     <Card>
@@ -66,14 +67,14 @@ export function NationalAqiSnapshot() {
                 }}
               >
                 <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="name" tick={{ fontSize: 12 }} angle={-30} textAnchor="end" height={70} />
+                <XAxis dataKey="name" tick={{ fontSize: 12 }} angle={-30} textAnchor="end" height={70} interval={0} />
                 <YAxis />
                 <Tooltip content={<ChartTooltipContent />} />
                 <Legend />
-                <Bar dataKey="aqi" barSize={20} fill="var(--color-aqi)" />
-                <Line type="monotone" dataKey="PM25" stroke="var(--color-PM25)" />
-                <Line type="monotone" dataKey="PM10" stroke="var(--color-PM10)" />
-                <Line type="monotone" dataKey="O3" stroke="var(--color-O3)" />
+                <Bar dataKey="aqi" barSize={20} fill="var(--color-aqi)" radius={[4, 4, 0, 0]} />
+                <Area type="monotone" dataKey="PM25" fill="var(--color-PM25)" stroke="var(--color-PM25)" fillOpacity={0.4} />
+                <Line type="monotone" dataKey="PM10" stroke="var(--color-PM10)" strokeWidth={2} />
+                <Line type="monotone" dataKey="O3" stroke="var(--color-O3)" strokeWidth={2} />
               </ComposedChart>
             </ResponsiveContainer>
           </ChartContainer>
