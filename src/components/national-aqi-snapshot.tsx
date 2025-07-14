@@ -1,89 +1,78 @@
 
 'use client';
 
-import { Bar, BarChart, XAxis, YAxis, CartesianGrid, Legend, ResponsiveContainer } from 'recharts';
+import { Pie, PieChart, ResponsiveContainer, Cell, Tooltip } from 'recharts';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { getLocationsData } from '@/lib/data';
-import { ChartContainer, ChartTooltip, ChartTooltipContent, type ChartConfig } from '@/components/ui/chart';
+import { ChartContainer, ChartTooltipContent, type ChartConfig } from '@/components/ui/chart';
+import { getAqiInfo } from '@/lib/aqi-helpers';
 
 const chartConfig = {
-  PM25: {
-    label: 'PM2.5',
-    color: 'hsl(var(--chart-1))',
-  },
-  PM10: {
-    label: 'PM10',
-    color: 'hsl(var(--chart-2))',
-  },
-  O3: {
-    label: 'Ozone (O3)',
-    color: 'hsl(var(--chart-3))',
+  aqi: {
+    label: 'AQI',
   },
 } satisfies ChartConfig;
+
+// Map Tailwind colors to hex for Recharts
+const colorHexMap: Record<string, string> = {
+  'bg-green-500': '#22c55e',
+  'bg-yellow-500': '#eab308',
+  'bg-orange-500': '#f97316',
+  'bg-red-500': '#ef4444',
+  'bg-purple-500': '#8b5cf6',
+  'bg-red-900': '#7f1d1d',
+};
 
 export function NationalAqiSnapshot() {
   const locations = getLocationsData();
 
-  const mostPollutedCities = [...locations]
-    .sort((a, b) => b.aqi - a.aqi)
-    .slice(0, 10);
-
-  const chartData = mostPollutedCities.map(location => {
-    const pollutantsData: {[key: string]: number} = {};
-    location.pollutants.forEach(p => {
-        const key = p.name.replace('.', '');
-        if (Object.keys(chartConfig).includes(key)) {
-            pollutantsData[key] = p.value;
-        }
-    });
-    return {
-        name: location.city,
-        ...pollutantsData
-    }
-  }).reverse();
-
   return (
     <Card>
       <CardHeader>
-        <CardTitle>National Pollutant Snapshot</CardTitle>
+        <CardTitle>National AQI Overview</CardTitle>
         <CardDescription>
-          Key pollutant concentrations for the 10 cities with the highest AQI today.
+          A snapshot of current AQI levels across major Indian cities.
         </CardDescription>
       </CardHeader>
       <CardContent>
         <div className="h-[450px] w-full">
           <ChartContainer config={chartConfig} className="w-full h-full">
             <ResponsiveContainer>
-              <BarChart
-                layout="vertical"
-                data={chartData}
-                margin={{
-                  top: 10,
-                  right: 30,
-                  bottom: 10,
-                  left: 30,
-                }}
-              >
-                <CartesianGrid horizontal={false} />
-                <YAxis
-                  dataKey="name"
-                  type="category"
-                  tickLine={false}
-                  axisLine={false}
-                  tick={{ fontSize: 12 }}
-                  width={80}
-                  interval={0}
+              <PieChart>
+                <Tooltip
+                  cursor={{ fill: 'hsl(var(--muted))' }}
+                  content={<ChartTooltipContent nameKey="city" hideLabel />}
                 />
-                <XAxis dataKey="value" type="number" hide />
-                <ChartTooltip
-                    cursor={{fill: 'hsl(var(--muted))'}}
-                    content={<ChartTooltipContent />}
-                />
-                <Legend />
-                <Bar dataKey="PM25" fill="var(--color-PM25)" radius={4} />
-                <Bar dataKey="PM10" fill="var(--color-PM10)" radius={4} />
-                <Bar dataKey="O3" fill="var(--color-O3)" radius={4} />
-              </BarChart>
+                <Pie
+                  data={locations}
+                  dataKey="aqi"
+                  nameKey="city"
+                  cx="50%"
+                  cy="50%"
+                  outerRadius="80%"
+                  labelLine={false}
+                  label={({ cx, cy, midAngle, innerRadius, outerRadius, percent, index }) => {
+                    const RADIAN = Math.PI / 180;
+                    const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
+                    const x = cx + radius * Math.cos(-midAngle * RADIAN);
+                    const y = cy + radius * Math.sin(-midAngle * RADIAN);
+                    // Only show label if the slice is large enough
+                    if ((percent * 100) > 5) {
+                      return (
+                        <text x={x} y={y} fill="white" textAnchor="middle" dominantBaseline="central">
+                          {locations[index].city}
+                        </text>
+                      );
+                    }
+                    return null;
+                  }}
+                >
+                  {locations.map((entry, index) => {
+                    const { color } = getAqiInfo(entry.aqi);
+                    return <Cell key={`cell-${index}`} fill={colorHexMap[color]} />;
+                  })}
+                </Pie>
+              </PieChart>
             </ResponsiveContainer>
           </ChartContainer>
         </div>
