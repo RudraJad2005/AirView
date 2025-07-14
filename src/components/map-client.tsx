@@ -1,13 +1,13 @@
-
 "use client";
 
 import 'leaflet/dist/leaflet.css';
 import 'leaflet.markercluster/dist/MarkerCluster.css';
 import 'leaflet.markercluster/dist/MarkerCluster.Default.css';
 import L from 'leaflet';
+import 'leaflet.markercluster';
 
-import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
-import MarkerClusterGroup from 'react-leaflet-markercluster';
+import { useEffect, useRef } from 'react';
+import { TileLayer, Marker, Popup } from 'react-leaflet';
 import { getLocationsData } from '@/lib/data';
 import { getAqiInfo } from '@/lib/aqi-helpers';
 
@@ -35,35 +35,37 @@ const createAqiIcon = (aqi: number) => {
 };
 
 export default function MapClient() {
+  const mapRef = useRef<HTMLDivElement>(null);
   const locations = getLocationsData();
 
-  // The check for client-side execution is handled by dynamic import with ssr:false on the page.
-  // We can render the map directly here.
-  return (
-    <MapContainer
-      center={[20.5937, 78.9629]} // Centered on India
-      zoom={5}
-      style={{ height: '100%', width: '100%', zIndex: 0 }}
-      className="map-container"
-    >
-      <TileLayer
-        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-      />
-      <MarkerClusterGroup>
-        {locations.map(location => (
-          <Marker
-            key={location.id}
-            position={[location.lat, location.lng]}
-            icon={createAqiIcon(location.aqi)}
-          >
-            <Popup>
-              <strong>{location.city}, {location.state}</strong><br />
-              AQI: {location.aqi}
-            </Popup>
-          </Marker>
-        ))}
-      </MarkerClusterGroup>
-    </MapContainer>
-  );
+  useEffect(() => {
+    if (mapRef.current && !mapRef.current.hasChildNodes()) {
+      const map = L.map(mapRef.current, {
+        center: [20.5937, 78.9629],
+        zoom: 5,
+      });
+
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+      }).addTo(map);
+
+      const markers = L.markerClusterGroup();
+
+      locations.forEach(location => {
+        const marker = L.marker([location.lat, location.lng], {
+          icon: createAqiIcon(location.aqi),
+        }).bindPopup(`<strong>${location.city}, ${location.state}</strong><br />AQI: ${location.aqi}`);
+        markers.addLayer(marker);
+      });
+
+      map.addLayer(markers);
+      
+      // Cleanup function to destroy the map instance
+      return () => {
+        map.remove();
+      };
+    }
+  }, [locations]);
+
+  return <div ref={mapRef} style={{ height: '100%', width: '100%', zIndex: 0 }} className="map-container" />;
 }
