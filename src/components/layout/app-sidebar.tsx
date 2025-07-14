@@ -1,15 +1,16 @@
+
 'use client';
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { LayoutGrid, BrainCircuit, Home, Settings, AlertTriangle } from 'lucide-react';
+import { LayoutGrid, BrainCircuit, Home, Settings, Map } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const navItems = [
   { href: '/', label: 'Home', icon: Home },
   { href: '/dashboard', label: 'Dashboard', icon: LayoutGrid },
   { href: '/analytics', label: 'Analytics', icon: BrainCircuit },
-  { href: '/emergency-response', label: 'Emergency', icon: AlertTriangle },
+  { href: '/map', label: 'Map', icon: Map },
   { href: '/settings', label: 'Settings', icon: Settings },
 ];
 

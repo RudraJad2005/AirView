@@ -53,13 +53,13 @@ export default function EmergencyResponsePage() {
   };
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6">
       <div>
-        <h2 className="text-3xl font-bold tracking-tight flex items-center gap-2">
-          <AlertTriangle className="h-8 w-8 text-destructive" />
+        <h3 className="text-lg font-medium flex items-center gap-2">
+          <AlertTriangle className="h-5 w-5 text-destructive" />
           Emergency Response
-        </h2>
-        <p className="text-muted-foreground mt-2">
+        </h3>
+        <p className="text-sm text-muted-foreground mt-1">
           High AQI Action Plans for Schools & Hospitals
         </p>
       </div>

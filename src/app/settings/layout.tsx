@@ -20,6 +20,7 @@ export default function SettingsLayout({
     ],
     'Information': [
       { name: 'About', href: '/settings/about' },
+      { name: 'Emergency Response', href: '/settings/emergency' },
       { name: 'Terms & Conditions', href: '/settings/terms' },
       { name: 'FAQ', href: '/settings/faq' },
     ],
