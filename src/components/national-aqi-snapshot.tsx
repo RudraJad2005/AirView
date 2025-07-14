@@ -1,7 +1,7 @@
 
 'use client';
 
-import { Pie, PieChart, ResponsiveContainer, Cell, Tooltip } from 'recharts';
+import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis, Tooltip, Cell } from 'recharts';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { getLocationsData } from '@/lib/data';
 import { ChartContainer, ChartTooltipContent, type ChartConfig } from '@/components/ui/chart';
@@ -25,54 +25,48 @@ const colorHexMap: Record<string, string> = {
 
 export function NationalAqiSnapshot() {
   const locations = getLocationsData();
+  const top10Locations = locations
+    .sort((a, b) => b.aqi - a.aqi)
+    .slice(0, 10)
+    .reverse(); // reverse for correct order in horizontal chart
 
   return (
     <Card>
       <CardHeader>
-        <CardTitle>National AQI Overview</CardTitle>
+        <CardTitle>Top 10 Highest AQI Cities</CardTitle>
         <CardDescription>
-          A snapshot of current AQI levels across major Indian cities.
+          A snapshot of the most polluted cities currently being monitored.
         </CardDescription>
       </CardHeader>
       <CardContent>
         <div className="h-[450px] w-full">
           <ChartContainer config={chartConfig} className="w-full h-full">
             <ResponsiveContainer>
-              <PieChart>
+              <BarChart
+                data={top10Locations}
+                layout="vertical"
+                margin={{ left: 20, right: 20 }}
+              >
+                <XAxis type="number" hide />
+                <YAxis
+                  dataKey="city"
+                  type="category"
+                  tickLine={false}
+                  axisLine={false}
+                  tick={{ fontSize: 12 }}
+                  width={80}
+                />
                 <Tooltip
                   cursor={{ fill: 'hsl(var(--muted))' }}
-                  content={<ChartTooltipContent nameKey="city" hideLabel />}
+                  content={<ChartTooltipContent />}
                 />
-                <Pie
-                  data={locations}
-                  dataKey="aqi"
-                  nameKey="city"
-                  cx="50%"
-                  cy="50%"
-                  outerRadius="80%"
-                  labelLine={false}
-                  label={({ cx, cy, midAngle, innerRadius, outerRadius, percent, index }) => {
-                    const RADIAN = Math.PI / 180;
-                    const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
-                    const x = cx + radius * Math.cos(-midAngle * RADIAN);
-                    const y = cy + radius * Math.sin(-midAngle * RADIAN);
-                    // Only show label if the slice is large enough
-                    if ((percent * 100) > 5) {
-                      return (
-                        <text x={x} y={y} fill="white" textAnchor="middle" dominantBaseline="central">
-                          {locations[index].city}
-                        </text>
-                      );
-                    }
-                    return null;
-                  }}
-                >
-                  {locations.map((entry, index) => {
-                    const { color } = getAqiInfo(entry.aqi);
-                    return <Cell key={`cell-${index}`} fill={colorHexMap[color]} />;
+                <Bar dataKey="aqi" radius={5}>
+                  {top10Locations.map((entry) => {
+                     const { color } = getAqiInfo(entry.aqi);
+                     return <Cell key={`cell-${entry.id}`} fill={colorHexMap[color]} />;
                   })}
-                </Pie>
-              </PieChart>
+                </Bar>
+              </BarChart>
             </ResponsiveContainer>
           </ChartContainer>
         </div>
