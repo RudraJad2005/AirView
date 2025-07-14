@@ -1,26 +1,20 @@
 
 "use client";
 
-import { useState, useEffect } from 'react';
-import dynamic from 'next/dynamic';
 import 'leaflet/dist/leaflet.css';
 import 'leaflet.markercluster/dist/MarkerCluster.css';
 import 'leaflet.markercluster/dist/MarkerCluster.Default.css';
 import L from 'leaflet';
+
+import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
+import MarkerClusterGroup from 'react-leaflet-markercluster';
 import { getLocationsData } from '@/lib/data';
 import { getAqiInfo } from '@/lib/aqi-helpers';
-import { Skeleton } from './ui/skeleton';
 
-// Dynamically import the map components to prevent SSR issues with Leaflet
-const MapContainer = dynamic(() => import('react-leaflet').then(mod => mod.MapContainer), { ssr: false });
-const TileLayer = dynamic(() => import('react-leaflet').then(mod => mod.TileLayer), { ssr: false });
-const Marker = dynamic(() => import('react-leaflet').then(mod => mod.Marker), { ssr: false });
-const Popup = dynamic(() => import('react-leaflet').then(mod => mod.Popup), { ssr: false });
-const MarkerClusterGroup = dynamic(() => import('react-leaflet-markercluster'), { ssr: false });
-
+// Helper function to create custom map icons with AQI values
 const createAqiIcon = (aqi: number) => {
   const { color } = getAqiInfo(aqi);
-  // Translate Tailwind color to actual hex/rgb for the inline style
+  // Map Tailwind CSS classes to actual colors for inline styles
   const colorMap: Record<string, string> = {
     'bg-green-500': '#22c55e',
     'bg-yellow-500': '#eab308',
@@ -34,26 +28,17 @@ const createAqiIcon = (aqi: number) => {
   
   return L.divIcon({
     html: iconHtml,
-    className: '', // important to clear default styling
+    className: '', // Important to clear default styling from leaflet.css
     iconSize: [35, 35],
     iconAnchor: [17, 35],
   });
 };
 
-export function MapClient() {
-  const [isClient, setIsClient] = useState(false);
+export default function MapClient() {
   const locations = getLocationsData();
 
-  useEffect(() => {
-    // This effect runs only on the client, after the component has mounted.
-    setIsClient(true);
-  }, []);
-
-  // Render a skeleton or nothing on the server and during initial client render
-  if (!isClient) {
-    return <Skeleton className="h-full w-full" />;
-  }
-
+  // The check for client-side execution is handled by dynamic import with ssr:false on the page.
+  // We can render the map directly here.
   return (
     <MapContainer
       center={[20.5937, 78.9629]} // Centered on India
