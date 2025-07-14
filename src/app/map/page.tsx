@@ -1,7 +1,6 @@
 
 "use client";
 
-import { useMemo } from 'react';
 import dynamic from 'next/dynamic';
 import 'leaflet/dist/leaflet.css';
 import 'leaflet.markercluster/dist/MarkerCluster.css';
@@ -10,7 +9,7 @@ import L from 'leaflet';
 import { getLocationsData } from '@/lib/data';
 import { getAqiInfo } from '@/lib/aqi-helpers';
 
-// Dynamically import the map component to prevent SSR issues with Leaflet
+// Dynamically import the map components to prevent SSR issues with Leaflet
 const MapContainer = dynamic(() => import('react-leaflet').then(mod => mod.MapContainer), { ssr: false });
 const TileLayer = dynamic(() => import('react-leaflet').then(mod => mod.TileLayer), { ssr: false });
 const Marker = dynamic(() => import('react-leaflet').then(mod => mod.Marker), { ssr: false });
@@ -41,34 +40,6 @@ const createAqiIcon = (aqi: number) => {
 
 export default function MapPage() {
   const locations = getLocationsData();
-  
-  const Map = useMemo(() => () => (
-    <MapContainer
-      center={[20.5937, 78.9629]} // Centered on India
-      zoom={5}
-      style={{ height: 'calc(100vh - 140px)', width: '100%', borderRadius: '0.5rem', zIndex: 0 }}
-      className="map-container"
-    >
-      <TileLayer
-        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-      />
-      <MarkerClusterGroup>
-        {locations.map(location => (
-          <Marker
-            key={location.id}
-            position={[location.lat, location.lng]}
-            icon={createAqiIcon(location.aqi)}
-          >
-            <Popup>
-              <strong>{location.city}, {location.state}</strong><br />
-              AQI: {location.aqi}
-            </Popup>
-          </Marker>
-        ))}
-      </MarkerClusterGroup>
-    </MapContainer>
-  ), [locations]);
 
   return (
     <div className="space-y-4">
@@ -78,8 +49,32 @@ export default function MapPage() {
           An interactive map showing real-time AQI levels across India.
         </p>
       </div>
-      <div className="rounded-lg overflow-hidden shadow-lg">
-        <Map />
+      <div className="rounded-lg overflow-hidden shadow-lg h-[calc(100vh-200px)]">
+        <MapContainer
+          center={[20.5937, 78.9629]} // Centered on India
+          zoom={5}
+          style={{ height: '100%', width: '100%', zIndex: 0 }}
+          className="map-container"
+        >
+          <TileLayer
+            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+          />
+          <MarkerClusterGroup>
+            {locations.map(location => (
+              <Marker
+                key={location.id}
+                position={[location.lat, location.lng]}
+                icon={createAqiIcon(location.aqi)}
+              >
+                <Popup>
+                  <strong>{location.city}, {location.state}</strong><br />
+                  AQI: {location.aqi}
+                </Popup>
+              </Marker>
+            ))}
+          </MarkerClusterGroup>
+        </MapContainer>
       </div>
     </div>
   );
