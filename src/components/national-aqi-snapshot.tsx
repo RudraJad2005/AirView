@@ -1,27 +1,23 @@
 
 'use client';
 
-import { ComposedChart, Bar, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, Area } from 'recharts';
+import { Bar, BarChart, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { getLocationsData } from '@/lib/data';
 import { ChartContainer, ChartTooltipContent, type ChartConfig } from '@/components/ui/chart';
 
 const chartConfig = {
-  aqi: {
-    label: 'Overall AQI',
-    color: 'hsl(var(--primary))',
-  },
   PM25: {
     label: 'PM2.5',
-    color: 'hsl(var(--chart-2))',
+    color: 'hsl(var(--chart-1))',
   },
   PM10: {
     label: 'PM10',
-    color: 'hsl(var(--chart-3))',
+    color: 'hsl(var(--chart-2))',
   },
   O3: {
     label: 'Ozone (O3)',
-    color: 'hsl(var(--chart-4))',
+    color: 'hsl(var(--chart-3))',
   },
 } satisfies ChartConfig;
 
@@ -35,29 +31,29 @@ export function NationalAqiSnapshot() {
   const chartData = mostPollutedCities.map(location => {
     const pollutantsData: {[key: string]: number} = {};
     location.pollutants.forEach(p => {
-        // recharts dataKeys can't have dots
-        pollutantsData[p.name.replace('.', '')] = p.value;
+        // recharts dataKeys can't have dots, e.g. PM2.5 -> PM25
+        const key = p.name.replace('.', '');
+        pollutantsData[key] = p.value;
     });
     return {
         name: location.city,
-        aqi: location.aqi,
         ...pollutantsData
     }
-  }).reverse(); // Reverse to show highest on the right
+  }).reverse(); // Reverse to show highest on the left/top in a horizontal bar chart
 
   return (
     <Card>
       <CardHeader>
-        <CardTitle>National AQI & Pollutant Snapshot</CardTitle>
+        <CardTitle>National Pollutant Snapshot</CardTitle>
         <CardDescription>
-          AQI and key pollutant levels for the 10 most polluted major cities today.
+          Key pollutant concentrations for the 10 cities with the highest AQI today.
         </CardDescription>
       </CardHeader>
       <CardContent>
         <div className="h-[450px] w-full">
           <ChartContainer config={chartConfig} className="w-full h-full">
             <ResponsiveContainer>
-              <ComposedChart
+              <BarChart
                 data={chartData}
                 margin={{
                   top: 20,
@@ -71,11 +67,10 @@ export function NationalAqiSnapshot() {
                 <YAxis />
                 <Tooltip content={<ChartTooltipContent />} />
                 <Legend />
-                <Bar dataKey="aqi" barSize={20} fill="var(--color-aqi)" radius={[4, 4, 0, 0]} />
-                <Area type="monotone" dataKey="PM25" fill="var(--color-PM25)" stroke="var(--color-PM25)" fillOpacity={0.4} />
-                <Line type="monotone" dataKey="PM10" stroke="var(--color-PM10)" strokeWidth={2} />
-                <Line type="monotone" dataKey="O3" stroke="var(--color-O3)" strokeWidth={2} />
-              </ComposedChart>
+                <Bar dataKey="PM25" fill="var(--color-PM25)" radius={[4, 4, 0, 0]} />
+                <Bar dataKey="PM10" fill="var(--color-PM10)" radius={[4, 4, 0, 0]} />
+                <Bar dataKey="O3" fill="var(--color-O3)" radius={[4, 4, 0, 0]} />
+              </BarChart>
             </ResponsiveContainer>
           </ChartContainer>
         </div>
