@@ -31,8 +31,11 @@ export function NationalAqiSnapshot() {
   const chartData = mostPollutedCities.map(location => {
     const pollutantsData: {[key: string]: number} = {};
     location.pollutants.forEach(p => {
+        // Sanitize key for recharts (e.g., "PM2.5" -> "PM25")
         const key = p.name.replace('.', '');
-        pollutantsData[key] = p.value;
+        if (Object.keys(chartConfig).includes(key)) {
+            pollutantsData[key] = p.value;
+        }
     });
     return {
         name: location.city,
@@ -78,9 +81,9 @@ export function NationalAqiSnapshot() {
                     content={<ChartTooltipContent />}
                 />
                 <Legend />
-                <Bar dataKey="PM25" fill="var(--color-PM25)" radius={4} />
-                <Bar dataKey="PM10" fill="var(--color-PM10)" radius={4} />
-                <Bar dataKey="O3" fill="var(--color-O3)" radius={4} />
+                <Bar dataKey="PM25" radius={4} />
+                <Bar dataKey="PM10" radius={4} />
+                <Bar dataKey="O3" radius={4} />
               </BarChart>
             </ResponsiveContainer>
           </ChartContainer>
