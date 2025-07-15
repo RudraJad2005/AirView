@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState } from 'react';
@@ -5,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Loader2, BrainCircuit, ShieldCheck, Leaf, HeartPulse, Wind } from 'lucide-react';
+import { Loader2, BrainCircuit, ShieldCheck, Leaf, HeartPulse, Wind, History } from 'lucide-react';
 import { predictAqi, AqiPredictionOutput } from '@/ai/flows/aqi-prediction-flow';
 import { getAqiGuidance, AqiGuidanceOutput } from '@/ai/flows/aqi-guidance-flow';
 import { getAqiInfo } from '@/lib/aqi-helpers';
@@ -14,6 +15,7 @@ import { cn } from '@/lib/utils';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { Skeleton } from '../ui/skeleton';
 import { useErrorDialog } from '@/hooks/use-error-dialog';
+import Link from 'next/link';
 
 interface AnalyticsClientProps {
   states: string[];
@@ -51,13 +53,19 @@ export function AnalyticsClient({ states }: AnalyticsClientProps) {
 
   return (
     <div className="space-y-8">
-      <div className="flex items-center justify-between space-y-2">
+      <div className="flex flex-col sm:flex-row items-center justify-between space-y-2">
         <div>
           <h2 className="text-3xl font-bold tracking-tight">AQI Analytics & Guidance</h2>
           <p className="text-muted-foreground">
             Generate AI-powered AQI forecasts and health recommendations.
           </p>
         </div>
+         <Button asChild variant="outline">
+          <Link href="/analytics/historical-analysis">
+            <History className="mr-2 h-4 w-4" />
+            Deeper Historical Analysis
+          </Link>
+        </Button>
       </div>
 
       <Card>

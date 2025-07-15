@@ -1,4 +1,24 @@
+
 import type { LocationData } from '@/types';
+import { subDays, format } from 'date-fns';
+
+// Helper function to generate more realistic historical data
+const generateHistoricalData = (baseAqi: number, days: number): { date: string, aqi: number }[] => {
+  const data = [];
+  for (let i = 0; i < days; i++) {
+    const date = subDays(new Date(), i);
+    // Introduce some variability
+    const fluctuation = (Math.random() - 0.5) * baseAqi * 0.2; // +/- 10%
+    const trend = (i / days) * baseAqi * 0.1; // slight downward trend over time
+    const aqi = Math.round(baseAqi + fluctuation - trend);
+    data.push({
+      date: format(date, 'MMM d'),
+      aqi: Math.max(10, aqi), // ensure aqi is not negative
+    });
+  }
+  return data.reverse(); // oldest to newest
+};
+
 
 const locationsData: LocationData[] = [
   {
@@ -17,15 +37,7 @@ const locationsData: LocationData[] = [
       { name: 'SO2', value: 30 },
       { name: 'CO', value: 9 },
     ],
-    historical: [
-      { date: 'Mon', aqi: 150 },
-      { date: 'Tue', aqi: 165 },
-      { date: 'Wed', aqi: 170 },
-      { date: 'Thu', aqi: 180 },
-      { date: 'Fri', aqi: 182 },
-      { date: 'Sat', aqi: 175 },
-      { date: 'Sun', aqi: 185 },
-    ],
+    historical: generateHistoricalData(190, 30),
   },
   {
     id: 'mumbai',
@@ -43,15 +55,7 @@ const locationsData: LocationData[] = [
       { name: 'SO2', value: 20 },
       { name: 'CO', value: 7 },
     ],
-    historical: [
-      { date: 'Mon', aqi: 80 },
-      { date: 'Tue', aqi: 85 },
-      { date: 'Wed', aqi: 90 },
-      { date: 'Thu', aqi: 92 },
-      { date: 'Fri', aqi: 98 },
-      { date: 'Sat', aqi: 102 },
-      { date: 'Sun', aqi: 95 },
-    ],
+    historical: generateHistoricalData(100, 30),
   },
   {
     id: 'bangalore',
@@ -69,15 +73,7 @@ const locationsData: LocationData[] = [
         { name: 'SO2', value: 15 },
         { name: 'CO', value: 5 },
     ],
-    historical: [
-      { date: 'Mon', aqi: 50 },
-      { date: 'Tue', aqi: 55 },
-      { date: 'Wed', aqi: 62 },
-      { date: 'Thu', aqi: 60 },
-      { date: 'Fri', aqi: 68 },
-      { date: 'Sat', aqi: 70 },
-      { date: 'Sun', aqi: 65 },
-    ],
+    historical: generateHistoricalData(70, 30),
   },
   {
     id: 'chennai',
@@ -95,15 +91,7 @@ const locationsData: LocationData[] = [
         { name: 'SO2', value: 12 },
         { name: 'CO', value: 4 },
     ],
-    historical: [
-      { date: 'Mon', aqi: 40 },
-      { date: 'Tue', aqi: 42 },
-      { date: 'Wed', aqi: 38 },
-      { date: 'Thu', aqi: 45 },
-      { date: 'Fri', aqi: 48 },
-      { date: 'Sat', aqi: 50 },
-      { date: 'Sun', aqi: 45 },
-    ],
+    historical: generateHistoricalData(50, 30),
   },
   {
     id: 'kolkata',
@@ -121,15 +109,7 @@ const locationsData: LocationData[] = [
       { name: 'SO2', value: 25 },
       { name: 'CO', value: 8 },
     ],
-    historical: [
-      { date: 'Mon', aqi: 155 },
-      { date: 'Tue', aqi: 158 },
-      { date: 'Wed', aqi: 160 },
-      { date: 'Thu', aqi: 165 },
-      { date: 'Fri', aqi: 170 },
-      { date: 'Sat', aqi: 168 },
-      { date: 'Sun', aqi: 162 },
-    ],
+    historical: generateHistoricalData(170, 30),
   },
   {
     id: 'hyderabad',
@@ -147,15 +127,7 @@ const locationsData: LocationData[] = [
       { name: 'SO2', value: 22 },
       { name: 'CO', value: 6 },
     ],
-    historical: [
-      { date: 'Mon', aqi: 95 },
-      { date: 'Tue', aqi: 100 },
-      { date: 'Wed', aqi: 102 },
-      { date: 'Thu', aqi: 110 },
-      { date: 'Fri', aqi: 108 },
-      { date: 'Sat', aqi: 112 },
-      { date: 'Sun', aqi: 105 },
-    ],
+    historical: generateHistoricalData(110, 30),
   },
   {
     id: 'pune',
@@ -173,15 +145,7 @@ const locationsData: LocationData[] = [
       { name: 'SO2', value: 18 },
       { name: 'CO', value: 7 },
     ],
-    historical: [
-      { date: 'Mon', aqi: 75 },
-      { date: 'Tue', aqi: 80 },
-      { date: 'Wed', aqi: 82 },
-      { date: 'Thu', aqi: 85 },
-      { date: 'Fri', aqi: 90 },
-      { date: 'Sat', aqi: 92 },
-      { date: 'Sun', aqi: 88 },
-    ],
+    historical: generateHistoricalData(90, 30),
   },
   {
     id: 'ahmedabad',
@@ -199,15 +163,7 @@ const locationsData: LocationData[] = [
       { name: 'SO2', value: 35 },
       { name: 'CO', value: 10 },
     ],
-    historical: [
-      { date: 'Mon', aqi: 180 },
-      { date: 'Tue', aqi: 185 },
-      { date: 'Wed', aqi: 190 },
-      { date: 'Thu', aqi: 192 },
-      { date: 'Fri', aqi: 200 },
-      { date: 'Sat', aqi: 198 },
-      { date: 'Sun', aqi: 195 },
-    ],
+    historical: generateHistoricalData(200, 30),
   },
   {
     id: 'jaipur',
@@ -225,15 +181,7 @@ const locationsData: LocationData[] = [
       { name: 'SO2', value: 28 },
       { name: 'CO', value: 8 },
     ],
-    historical: [
-      { date: 'Mon', aqi: 130 },
-      { date: 'Tue', aqi: 135 },
-      { date: 'Wed', aqi: 140 },
-      { date: 'Thu', aqi: 142 },
-      { date: 'Fri', aqi: 150 },
-      { date: 'Sat', aqi: 148 },
-      { date: 'Sun', aqi: 145 },
-    ],
+    historical: generateHistoricalData(150, 30),
   },
   {
     id: 'lucknow',
@@ -251,15 +199,7 @@ const locationsData: LocationData[] = [
       { name: 'SO2', value: 40 },
       { name: 'CO', value: 12 },
     ],
-    historical: [
-      { date: 'Mon', aqi: 190 },
-      { date: 'Tue', aqi: 195 },
-      { date: 'Wed', aqi: 200 },
-      { date: 'Thu', aqi: 205 },
-      { date: 'Fri', aqi: 215 },
-      { date: 'Sat', aqi: 212 },
-      { date: 'Sun', aqi: 210 },
-    ],
+    historical: generateHistoricalData(215, 30),
   },
 ];
 
