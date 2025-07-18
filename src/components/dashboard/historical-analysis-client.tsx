@@ -6,7 +6,7 @@ import type { LocationData } from '@/types';
 import Select from 'react-select';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, LineChart as LineChartIcon, BarChart3, Table as TableIcon } from 'lucide-react';
+import { ArrowLeft, LineChart as LineChartIcon, BarChart3, Table as TableIcon, ArrowUp, ArrowDown, Thermometer } from 'lucide-react';
 import Link from 'next/link';
 import { CartesianGrid, Line, LineChart, XAxis, YAxis, Legend, Tooltip } from 'recharts';
 import { ChartContainer, ChartTooltipContent, type ChartConfig } from '@/components/ui/chart';
@@ -35,7 +35,7 @@ export function HistoricalAnalysisClient({ locations }: HistoricalAnalysisClient
     setSelectedLocations(newSelectedLocations);
   };
 
-  const { chartData, chartConfig, summaryStats } = useMemo(() => {
+  const { chartData, chartConfig, summaryStats, overallStats } = useMemo(() => {
     const config: ChartConfig = {};
     selectedLocations.forEach((loc, index) => {
       config[loc.city] = {
@@ -45,7 +45,7 @@ export function HistoricalAnalysisClient({ locations }: HistoricalAnalysisClient
     });
 
     if (!selectedLocations.length) {
-      return { chartData: [], chartConfig: {}, summaryStats: [] };
+      return { chartData: [], chartConfig: {}, summaryStats: [], overallStats: { avg: 0, min: 0, max: 0 } };
     }
 
     const data = selectedLocations[0].historical.map((_, dayIndex) => {
@@ -58,8 +58,10 @@ export function HistoricalAnalysisClient({ locations }: HistoricalAnalysisClient
       return entry;
     });
 
+    const allAqiValues: number[] = [];
     const stats = selectedLocations.map(loc => {
         const aqiValues = loc.historical.map(h => h.aqi);
+        allAqiValues.push(...aqiValues);
         const sum = aqiValues.reduce((a, b) => a + b, 0);
         return {
             city: loc.city,
@@ -69,7 +71,13 @@ export function HistoricalAnalysisClient({ locations }: HistoricalAnalysisClient
         };
     });
 
-    return { chartData: data, chartConfig: config, summaryStats: stats };
+    const overall = {
+        avg: allAqiValues.length ? Math.round(allAqiValues.reduce((a, b) => a + b, 0) / allAqiValues.length) : 0,
+        min: allAqiValues.length ? Math.min(...allAqiValues) : 0,
+        max: allAqiValues.length ? Math.max(...allAqiValues) : 0,
+    }
+
+    return { chartData: data, chartConfig: config, summaryStats: stats, overallStats: overall };
   }, [selectedLocations]);
 
   return (
@@ -82,7 +90,7 @@ export function HistoricalAnalysisClient({ locations }: HistoricalAnalysisClient
         <h2 className="text-2xl md:text-3xl font-bold tracking-tight">Historical Data Analysis</h2>
       </div>
 
-      <Card>
+      <Card className="backdrop-blur-xl transition-all duration-300 hover:scale-[1.03] hover:shadow-lg hover:shadow-primary/20 border-primary/20 hover:border-primary/50">
         <CardHeader>
           <CardTitle>Compare Historical AQI</CardTitle>
           <CardDescription>Select multiple cities to compare their AQI trends over the last 30 days.</CardDescription>
@@ -124,7 +132,47 @@ export function HistoricalAnalysisClient({ locations }: HistoricalAnalysisClient
         </CardContent>
       </Card>
 
-      <Card>
+      <div className="grid gap-6 md:grid-cols-3">
+        <Card className="backdrop-blur-xl transition-all duration-300 hover:scale-[1.03] hover:shadow-lg hover:shadow-primary/20 border-primary/20 hover:border-primary/50">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium text-muted-foreground">Overall Highest AQI</CardTitle>
+            <div className="p-2 rounded-lg bg-gradient-to-tr from-primary to-primary/70">
+              <ArrowUp className="h-5 w-5 text-primary-foreground" />
+            </div>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{overallStats.max}</div>
+            <p className="text-xs text-muted-foreground">across selected cities (30d)</p>
+          </CardContent>
+        </Card>
+        <Card className="backdrop-blur-xl transition-all duration-300 hover:scale-[1.03] hover:shadow-lg hover:shadow-primary/20 border-primary/20 hover:border-primary/50">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium text-muted-foreground">Overall Lowest AQI</CardTitle>
+            <div className="p-2 rounded-lg bg-gradient-to-tr from-primary to-primary/70">
+              <ArrowDown className="h-5 w-5 text-primary-foreground" />
+            </div>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{overallStats.min}</div>
+            <p className="text-xs text-muted-foreground">across selected cities (30d)</p>
+          </CardContent>
+        </Card>
+        <Card className="backdrop-blur-xl transition-all duration-300 hover:scale-[1.03] hover:shadow-lg hover:shadow-primary/20 border-primary/20 hover:border-primary/50">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium text-muted-foreground">Overall Average AQI</CardTitle>
+            <div className="p-2 rounded-lg bg-gradient-to-tr from-primary to-primary/70">
+              <Thermometer className="h-5 w-5 text-primary-foreground" />
+            </div>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{overallStats.avg}</div>
+            <p className="text-xs text-muted-foreground">across selected cities (30d)</p>
+          </CardContent>
+        </Card>
+      </div>
+
+
+      <Card className="backdrop-blur-xl transition-all duration-300 hover:scale-[1.03] hover:shadow-lg hover:shadow-primary/20 border-primary/20 hover:border-primary/50">
         <CardHeader>
           <CardTitle className="flex items-center gap-2"><LineChartIcon className="h-5 w-5" />AQI Trend Comparison</CardTitle>
           <CardDescription>Line chart showing the daily AQI fluctuations for the selected cities.</CardDescription>
@@ -133,11 +181,11 @@ export function HistoricalAnalysisClient({ locations }: HistoricalAnalysisClient
           <div className="h-[400px] w-full pt-4">
             {selectedLocations.length > 0 ? (
               <ChartContainer config={chartConfig} className="h-full w-full">
-                <LineChart data={chartData} margin={{ left: 12, right: 12 }}>
-                  <CartesianGrid vertical={false} />
-                  <XAxis dataKey="date" tickLine={false} axisLine={false} tickMargin={8} />
-                  <YAxis tickLine={false} axisLine={false} tickMargin={8} tickFormatter={(value) => `${value}`} />
-                  <Tooltip content={<ChartTooltipContent indicator="line" />} />
+                <LineChart data={chartData} margin={{ left: -10, right: 20 }}>
+                  <CartesianGrid vertical={false} stroke="hsl(var(--muted))" strokeDasharray="3 3"/>
+                  <XAxis dataKey="date" tickLine={false} axisLine={false} tickMargin={8} stroke="hsl(var(--muted-foreground))" fontSize={12} />
+                  <YAxis tickLine={false} axisLine={false} tickMargin={8} tickFormatter={(value) => `${value}`} stroke="hsl(var(--muted-foreground))" fontSize={12} />
+                  <Tooltip content={<ChartTooltipContent indicator="line" />} cursor={{ stroke: "hsl(var(--primary))", strokeWidth: 1.5 }} />
                   <Legend />
                   {Object.keys(chartConfig).map(city => (
                     <Line key={city} dataKey={city} type="monotone" stroke={`var(--color-${city})`} strokeWidth={2} dot={false} />
@@ -153,7 +201,7 @@ export function HistoricalAnalysisClient({ locations }: HistoricalAnalysisClient
         </CardContent>
       </Card>
 
-       <Card>
+       <Card className="backdrop-blur-xl transition-all duration-300 hover:scale-[1.03] hover:shadow-lg hover:shadow-primary/20 border-primary/20 hover:border-primary/50">
         <CardHeader>
           <CardTitle className="flex items-center gap-2"><TableIcon className="h-5 w-5" />Summary Statistics</CardTitle>
           <CardDescription>Key AQI metrics for the selected cities over the 30-day period.</CardDescription>
@@ -170,11 +218,11 @@ export function HistoricalAnalysisClient({ locations }: HistoricalAnalysisClient
                 </TableHeader>
                 <TableBody>
                     {summaryStats.map(stat => (
-                        <TableRow key={stat.city}>
+                        <TableRow key={stat.city} className="hover:bg-muted/80">
                             <TableCell className="font-medium">{stat.city}</TableCell>
                             <TableCell className="text-right">{stat.avg}</TableCell>
-                            <TableCell className="text-right text-green-500">{stat.min}</TableCell>
-                            <TableCell className="text-right text-red-500">{stat.max}</TableCell>
+                            <TableCell className="text-right text-green-400">{stat.min}</TableCell>
+                            <TableCell className="text-right text-red-400">{stat.max}</TableCell>
                         </TableRow>
                     ))}
                 </TableBody>
