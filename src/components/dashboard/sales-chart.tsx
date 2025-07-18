@@ -7,25 +7,17 @@ import {
   ChartTooltipContent,
   type ChartConfig,
 } from "@/components/ui/chart"
+import { getLocationsData } from "@/lib/data"
 
-const chartData = [
-  { month: "Jan", sales: 186 },
-  { month: "Feb", sales: 305 },
-  { month: "Mar", sales: 237 },
-  { month: "Apr", sales: 273 },
-  { month: "May", sales: 209 },
-  { month: "Jun", sales: 214 },
-  { month: "Jul", sales: 345 },
-  { month: "Aug", sales: 421 },
-  { month: "Sep", sales: 349 },
-  { month: "Oct", sales: 452 },
-  { month: "Nov", sales: 389 },
-  { month: "Dec", sales: 473 },
-]
+const delhiData = getLocationsData().find(l => l.id === 'delhi')?.historical.map(h => ({
+    date: h.date,
+    aqi: h.aqi,
+})) || [];
+
 
 const chartConfig = {
-  sales: {
-    label: "Sales",
+  aqi: {
+    label: "AQI",
     color: "hsl(var(--chart-1))",
   },
 } satisfies ChartConfig
@@ -36,7 +28,7 @@ export function SalesChart() {
         <ChartContainer config={chartConfig} className="w-full h-full">
             <ResponsiveContainer>
                 <AreaChart
-                    data={chartData}
+                    data={delhiData}
                     margin={{
                         left: -20,
                         right: 10,
@@ -45,18 +37,19 @@ export function SalesChart() {
                     }}
                 >
                     <defs>
-                        <linearGradient id="colorSales" x1="0" y1="0" x2="0" y2="1">
-                            <stop offset="5%" stopColor="var(--color-sales)" stopOpacity={0.8}/>
-                            <stop offset="95%" stopColor="var(--color-sales)" stopOpacity={0}/>
+                        <linearGradient id="colorAqi" x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="5%" stopColor="var(--color-aqi)" stopOpacity={0.8}/>
+                            <stop offset="95%" stopColor="var(--color-aqi)" stopOpacity={0}/>
                         </linearGradient>
                     </defs>
                     <CartesianGrid vertical={false} strokeDasharray="3 3" stroke="hsl(var(--muted))" />
                     <XAxis
-                        dataKey="month"
+                        dataKey="date"
                         stroke="hsl(var(--muted-foreground))"
                         fontSize={12}
                         tickLine={false}
                         axisLine={false}
+                        tickFormatter={(value, index) => index % 5 === 0 ? value : ''} // Show every 5th label
                     />
                     <YAxis
                         stroke="hsl(var(--muted-foreground))"
@@ -69,11 +62,11 @@ export function SalesChart() {
                         content={<ChartTooltipContent />}
                     />
                     <Area
-                        dataKey="sales"
+                        dataKey="aqi"
                         type="monotone"
-                        stroke="var(--color-sales)"
+                        stroke="var(--color-aqi)"
                         fillOpacity={1}
-                        fill="url(#colorSales)"
+                        fill="url(#colorAqi)"
                         strokeWidth={2}
                     />
                 </AreaChart>

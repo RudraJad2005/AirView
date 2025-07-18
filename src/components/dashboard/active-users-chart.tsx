@@ -7,19 +7,21 @@ import {
   ChartTooltipContent,
   type ChartConfig,
 } from "@/components/ui/chart"
+import { getLocationsData } from "@/lib/data"
 
+const locations = getLocationsData();
 const chartData = [
-  { month: "Jan", users: 186 },
-  { month: "Feb", users: 305 },
-  { month: "Mar", users: 237 },
-  { month: "Apr", users: 273 },
-  { month: "May", users: 209 },
-  { month: "Jun", users: 214 },
-];
+    { city: "Delhi", aqi: locations.find(l => l.id === 'delhi')?.aqi || 0 },
+    { city: "Mumbai", aqi: locations.find(l => l.id === 'mumbai')?.aqi || 0 },
+    { city: "Bengaluru", aqi: locations.find(l => l.id === 'bangalore')?.aqi || 0 },
+    { city: "Kolkata", aqi: locations.find(l => l.id === 'kolkata')?.aqi || 0 },
+    { city: "Chennai", aqi: locations.find(l => l.id === 'chennai')?.aqi || 0 },
+    { city: "Lucknow", aqi: locations.find(l => l.id === 'lucknow')?.aqi || 0 },
+]
 
 const chartConfig = {
-  users: {
-    label: "Active Users",
+  aqi: {
+    label: "AQI",
     color: "hsl(var(--primary))",
   },
 } satisfies ChartConfig
@@ -40,7 +42,7 @@ export function ActiveUsersChart() {
                 >
                     <CartesianGrid vertical={false} strokeDasharray="3 3" stroke="hsl(var(--muted))" />
                     <XAxis
-                        dataKey="month"
+                        dataKey="city"
                         stroke="hsl(var(--muted-foreground))"
                         fontSize={12}
                         tickLine={false}
@@ -57,8 +59,8 @@ export function ActiveUsersChart() {
                         content={<ChartTooltipContent />}
                     />
                     <Bar
-                        dataKey="users"
-                        fill="var(--color-users)"
+                        dataKey="aqi"
+                        fill="var(--color-aqi)"
                         radius={[4, 4, 0, 0]}
                     />
                 </BarChart>
