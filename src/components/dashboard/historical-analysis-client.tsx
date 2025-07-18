@@ -249,5 +249,3 @@ export function HistoricalAnalysisClient({ locations }: HistoricalAnalysisClient
     </div>
   );
 }
-
-    
