@@ -90,7 +90,7 @@ export function HistoricalAnalysisClient({ locations }: HistoricalAnalysisClient
         <h2 className="text-2xl md:text-3xl font-bold tracking-tight">Historical Data Analysis</h2>
       </div>
 
-      <Card className="backdrop-blur-xl transition-all duration-300 hover:scale-[1.03] hover:shadow-lg hover:shadow-primary/20 border-primary/20 hover:border-primary/50">
+      <Card className="relative z-20 backdrop-blur-xl transition-all duration-300 hover:scale-[1.03] hover:shadow-lg hover:shadow-primary/20 border-primary/20 hover:border-primary/50">
         <CardHeader>
           <CardTitle>Compare Historical AQI</CardTitle>
           <CardDescription>Select multiple cities to compare their AQI trends over the last 30 days.</CardDescription>
@@ -112,7 +112,7 @@ export function HistoricalAnalysisClient({ locations }: HistoricalAnalysisClient
                 menu: (base) => ({
                     ...base,
                     background: 'hsl(var(--background))',
-                    zIndex: 10
+                    zIndex: 50
                 }),
                 option: (base, state) => ({
                     ...base,
@@ -132,7 +132,7 @@ export function HistoricalAnalysisClient({ locations }: HistoricalAnalysisClient
         </CardContent>
       </Card>
 
-      <div className="grid gap-6 md:grid-cols-3">
+      <div className="relative z-10 grid gap-6 md:grid-cols-3">
         <Card className="backdrop-blur-xl transition-all duration-300 hover:scale-[1.03] hover:shadow-lg hover:shadow-primary/20 border-primary/20 hover:border-primary/50">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium text-muted-foreground">Overall Highest AQI</CardTitle>
