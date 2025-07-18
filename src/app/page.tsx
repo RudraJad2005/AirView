@@ -2,9 +2,9 @@
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { ArrowRight, BrainCircuit, ShieldCheck, Wind } from "lucide-react";
-import { NationalAqiSnapshot } from "@/components/national-aqi-snapshot";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { CurrentLocationAqi } from "@/components/home/current-location-aqi";
+import { AqiDonutChart } from "@/components/home/aqi-donut-chart";
 
 export default function HomePage() {
   return (
@@ -39,7 +39,7 @@ export default function HomePage() {
 
       {/* --- National AQI Snapshot --- */}
       <section className="container mx-auto px-4">
-        <NationalAqiSnapshot />
+        <AqiDonutChart />
       </section>
 
       {/* --- Features Section --- */}
