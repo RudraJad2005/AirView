@@ -4,7 +4,7 @@ import Link from "next/link";
 import { ArrowRight, BrainCircuit, ShieldCheck, Wind } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { CurrentLocationAqi } from "@/components/home/current-location-aqi";
-import { AqiDonutChart } from "@/components/home/aqi-donut-chart";
+import { CityOverview } from "@/components/home/city-overview";
 
 export default function HomePage() {
   return (
@@ -39,7 +39,7 @@ export default function HomePage() {
 
       {/* --- National AQI Snapshot --- */}
       <section className="container mx-auto px-4">
-        <AqiDonutChart />
+        <CityOverview />
       </section>
 
       {/* --- Features Section --- */}
