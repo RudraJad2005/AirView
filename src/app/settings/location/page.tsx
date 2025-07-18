@@ -108,7 +108,7 @@ export default function LocationSettingsPage() {
           Manage your saved locations for quick access.
         </p>
       </div>
-      <Card>
+      <Card className="backdrop-blur-xl transition-all duration-300 hover:scale-[1.03] hover:shadow-lg hover:shadow-primary/20 border-primary/20 hover:border-primary/50">
         <CardHeader>
           <CardTitle>Saved Locations</CardTitle>
           <CardDescription>

@@ -68,7 +68,7 @@ export function AnalyticsClient({ states }: AnalyticsClientProps) {
         </Button>
       </div>
 
-      <Card>
+      <Card className="backdrop-blur-xl transition-all duration-300 hover:scale-[1.03] hover:shadow-lg hover:shadow-primary/20 border-primary/20 hover:border-primary/50">
         <CardHeader>
           <CardTitle>Generate Report</CardTitle>
           <CardDescription>Select a state to predict its AQI trend and get health guidance.</CardDescription>
@@ -99,7 +99,7 @@ export function AnalyticsClient({ states }: AnalyticsClientProps) {
 
       {isLoading && (
         <div className="grid gap-8">
-            <Card>
+            <Card className="backdrop-blur-xl">
                 <CardHeader>
                     <Skeleton className="h-6 w-1/2" />
                     <Skeleton className="h-4 w-3/4" />
@@ -112,7 +112,7 @@ export function AnalyticsClient({ states }: AnalyticsClientProps) {
                     </div>
                 </CardContent>
             </Card>
-             <Card>
+             <Card className="backdrop-blur-xl">
                 <CardHeader>
                     <Skeleton className="h-6 w-1/2" />
                     <Skeleton className="h-4 w-3/4" />
@@ -127,7 +127,7 @@ export function AnalyticsClient({ states }: AnalyticsClientProps) {
       )}
 
       {predictions && (
-        <Card>
+        <Card className="backdrop-blur-xl transition-all duration-300 hover:scale-[1.03] hover:shadow-lg hover:shadow-primary/20 border-primary/20 hover:border-primary/50">
           <CardHeader>
             <CardTitle>3-Day Forecast for {selectedState}</CardTitle>
             <CardDescription>
@@ -147,7 +147,7 @@ export function AnalyticsClient({ states }: AnalyticsClientProps) {
                 {predictions.predictions.map((prediction, index) => {
                   const { category, color } = getAqiInfo(prediction.predictedAqi);
                   return (
-                    <TableRow key={index}>
+                    <TableRow key={index} className="hover:bg-muted/80">
                       <TableCell className="font-medium">{prediction.day}</TableCell>
                       <TableCell className="text-center">
                         <div className="flex flex-col items-center gap-1">
@@ -166,7 +166,7 @@ export function AnalyticsClient({ states }: AnalyticsClientProps) {
       )}
 
       {guidance && (
-        <Card>
+        <Card className="backdrop-blur-xl transition-all duration-300 hover:scale-[1.03] hover:shadow-lg hover:shadow-primary/20 border-primary/20 hover:border-primary/50">
             <CardHeader>
                 <CardTitle>Health & Safety Guidance for {selectedState}</CardTitle>
                 <CardDescription>AI-generated recommendations to help you stay safe and reduce pollution.</CardDescription>

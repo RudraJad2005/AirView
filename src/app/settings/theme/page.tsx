@@ -1,3 +1,4 @@
+
 "use client"
 
 import { useTheme } from "next-themes"
@@ -16,15 +17,15 @@ export default function ThemeSettingsPage() {
         </p>
       </div>
       <RadioGroup onValueChange={setTheme} value={theme} className="space-y-2">
-        <Label className="flex items-center gap-2 border rounded-md p-4 cursor-pointer">
+        <Label className="flex items-center gap-2 border rounded-md p-4 cursor-pointer backdrop-blur-xl transition-all duration-300 hover:scale-[1.03] hover:shadow-lg hover:shadow-primary/20 border-primary/20 hover:border-primary/50">
           <RadioGroupItem value="light" id="light" />
           <span>Light</span>
         </Label>
-        <Label className="flex items-center gap-2 border rounded-md p-4 cursor-pointer">
+        <Label className="flex items-center gap-2 border rounded-md p-4 cursor-pointer backdrop-blur-xl transition-all duration-300 hover:scale-[1.03] hover:shadow-lg hover:shadow-primary/20 border-primary/20 hover:border-primary/50">
           <RadioGroupItem value="dark" id="dark" />
           <span>Dark</span>
         </Label>
-         <Label className="flex items-center gap-2 border rounded-md p-4 cursor-pointer">
+         <Label className="flex items-center gap-2 border rounded-md p-4 cursor-pointer backdrop-blur-xl transition-all duration-300 hover:scale-[1.03] hover:shadow-lg hover:shadow-primary/20 border-primary/20 hover:border-primary/50">
           <RadioGroupItem value="system" id="system" />
           <span>System</span>
         </Label>

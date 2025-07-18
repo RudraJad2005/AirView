@@ -31,7 +31,7 @@ export default function ApiSettingsPage() {
         </p>
       </div>
 
-      <Card>
+      <Card className="backdrop-blur-xl transition-all duration-300 hover:scale-[1.03] hover:shadow-lg hover:shadow-primary/20 border-primary/20 hover:border-primary/50">
         <CardHeader>
           <CardTitle>Your API Key</CardTitle>
           <CardDescription>
@@ -54,7 +54,7 @@ export default function ApiSettingsPage() {
         </CardContent>
       </Card>
 
-      <Card>
+      <Card className="backdrop-blur-xl transition-all duration-300 hover:scale-[1.03] hover:shadow-lg hover:shadow-primary/20 border-primary/20 hover:border-primary/50">
         <CardHeader>
           <CardTitle>API Endpoint</CardTitle>
           <CardDescription>
@@ -70,7 +70,7 @@ export default function ApiSettingsPage() {
         </CardContent>
       </Card>
       
-      <Card>
+      <Card className="backdrop-blur-xl transition-all duration-300 hover:scale-[1.03] hover:shadow-lg hover:shadow-primary/20 border-primary/20 hover:border-primary/50">
         <CardHeader>
           <CardTitle>Sample Response</CardTitle>
           <CardDescription>

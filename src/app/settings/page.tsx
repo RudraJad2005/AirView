@@ -1,3 +1,4 @@
+
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 
@@ -11,7 +12,7 @@ export default function SettingsPage() {
         </p>
       </div>
       <div className="space-y-4">
-        <div className="flex flex-row items-center justify-between rounded-lg border p-4">
+        <div className="flex flex-row items-center justify-between rounded-lg border p-4 backdrop-blur-xl transition-all duration-300 hover:scale-[1.03] hover:shadow-lg hover:shadow-primary/20 border-primary/20 hover:border-primary/50">
           <div className="space-y-0.5">
             <Label className="text-base">High AQI Alerts</Label>
             <p className="text-sm text-muted-foreground">
@@ -20,7 +21,7 @@ export default function SettingsPage() {
           </div>
           <Switch aria-label="High AQI Alerts" />
         </div>
-        <div className="flex flex-row items-center justify-between rounded-lg border p-4">
+        <div className="flex flex-row items-center justify-between rounded-lg border p-4 backdrop-blur-xl transition-all duration-300 hover:scale-[1.03] hover:shadow-lg hover:shadow-primary/20 border-primary/20 hover:border-primary/50">
           <div className="space-y-0.5">
             <Label className="text-base">Weekly Summary</Label>
             <p className="text-sm text-muted-foreground">

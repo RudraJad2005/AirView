@@ -1,3 +1,4 @@
+
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { ArrowRight, BrainCircuit, ShieldCheck, Wind } from "lucide-react";
@@ -50,7 +51,7 @@ export default function HomePage() {
           </p>
         </div>
         <div className="grid gap-8 md:grid-cols-3">
-          <Card>
+          <Card className="backdrop-blur-xl transition-all duration-300 hover:scale-[1.03] hover:shadow-lg hover:shadow-primary/20 border-primary/20 hover:border-primary/50">
             <CardHeader className="items-center text-center">
               <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-primary/10">
                 <Wind className="h-8 w-8 text-primary" />
@@ -61,7 +62,7 @@ export default function HomePage() {
               <p>Access up-to-the-minute Air Quality Index readings from cities across India.</p>
             </CardContent>
           </Card>
-          <Card>
+          <Card className="backdrop-blur-xl transition-all duration-300 hover:scale-[1.03] hover:shadow-lg hover:shadow-primary/20 border-primary/20 hover:border-primary/50">
             <CardHeader className="items-center text-center">
               <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-primary/10">
                 <BrainCircuit className="h-8 w-8 text-primary" />
@@ -72,7 +73,7 @@ export default function HomePage() {
               <p>Get predictive insights into future air quality trends to plan your activities.</p>
             </CardContent>
           </Card>
-          <Card>
+          <Card className="backdrop-blur-xl transition-all duration-300 hover:scale-[1.03] hover:shadow-lg hover:shadow-primary/20 border-primary/20 hover:border-primary/50">
             <CardHeader className="items-center text-center">
               <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-primary/10">
                 <ShieldCheck className="h-8 w-8 text-primary" />
@@ -88,7 +89,7 @@ export default function HomePage() {
 
       {/* --- Final CTA Section --- */}
       <section>
-        <Card className="bg-primary text-primary-foreground">
+        <Card className="bg-primary text-primary-foreground backdrop-blur-xl transition-all duration-300 hover:scale-[1.03] hover:shadow-lg hover:shadow-primary/20 border-primary/20 hover:border-primary/50">
           <CardContent className="p-8 md:p-12 text-center">
              <h2 className="text-3xl font-bold">Ready to take control of your health?</h2>
              <p className="mt-4 max-w-2xl mx-auto">

@@ -1,3 +1,4 @@
+
 "use client";
 
 import {
@@ -64,7 +65,7 @@ export default function EmergencyResponsePage() {
         </p>
       </div>
 
-      <Card>
+      <Card className="backdrop-blur-xl transition-all duration-300 hover:scale-[1.03] hover:shadow-lg hover:shadow-primary/20 border-primary/20 hover:border-primary/50">
         <CardHeader>
           <CardTitle>For Schools</CardTitle>
           <CardDescription>
@@ -98,7 +99,7 @@ export default function EmergencyResponsePage() {
         </CardContent>
       </Card>
       
-      <Card>
+      <Card className="backdrop-blur-xl transition-all duration-300 hover:scale-[1.03] hover:shadow-lg hover:shadow-primary/20 border-primary/20 hover:border-primary/50">
         <CardHeader>
           <CardTitle>For Hospitals & Clinics</CardTitle>
           <CardDescription>

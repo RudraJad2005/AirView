@@ -1,3 +1,4 @@
+
 import { LocationDetailClient } from '@/components/location-detail-client';
 import { getLocationById } from '@/lib/data';
 import { notFound } from 'next/navigation';

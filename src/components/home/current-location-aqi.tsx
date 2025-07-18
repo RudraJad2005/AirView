@@ -92,7 +92,7 @@ export function CurrentLocationAqi() {
 
   if (!user) {
     return (
-      <Card className="flex flex-col items-center justify-center text-center min-h-[250px] bg-muted/50">
+      <Card className="flex flex-col items-center justify-center text-center min-h-[250px] bg-muted/50 backdrop-blur-xl transition-all duration-300 hover:scale-[1.03] hover:shadow-lg hover:shadow-primary/20 border-primary/20 hover:border-primary/50">
         <CardHeader>
           <CardTitle>See Your Local Air Quality</CardTitle>
           <CardDescription>Log in to view the real-time AQI for your area.</CardDescription>
@@ -108,7 +108,7 @@ export function CurrentLocationAqi() {
 
   if (status === 'idle') {
     return (
-      <Card className="flex flex-col items-center justify-center text-center min-h-[250px] bg-muted/50">
+      <Card className="flex flex-col items-center justify-center text-center min-h-[250px] bg-muted/50 backdrop-blur-xl transition-all duration-300 hover:scale-[1.03] hover:shadow-lg hover:shadow-primary/20 border-primary/20 hover:border-primary/50">
         <CardHeader>
           <CardTitle>Your Local Air Quality</CardTitle>
           <CardDescription>Find the AQI at your nearest monitoring station.</CardDescription>
@@ -125,7 +125,7 @@ export function CurrentLocationAqi() {
 
   if (status === 'loading') {
     return (
-      <Card className="flex flex-col items-center justify-center text-center min-h-[250px]">
+      <Card className="flex flex-col items-center justify-center text-center min-h-[250px] backdrop-blur-xl">
         <Loader2 className="h-8 w-8 animate-spin text-primary" />
         <p className="mt-4 text-muted-foreground">Getting your location...</p>
       </Card>
@@ -134,7 +134,7 @@ export function CurrentLocationAqi() {
 
   if (status === 'error' || !location) {
     return (
-      <Card className="flex flex-col items-center justify-center text-center min-h-[250px] border-destructive/50 p-4">
+      <Card className="flex flex-col items-center justify-center text-center min-h-[250px] border-destructive/50 p-4 backdrop-blur-xl transition-all duration-300 hover:scale-[1.03] hover:shadow-lg hover:shadow-destructive/20 hover:border-destructive/50">
         <AlertTriangle className="h-8 w-8 text-destructive" />
         <p className="mt-4 text-destructive max-w-sm">{error || "Could not determine your location."}</p>
         <Button variant="secondary" className="mt-4" onClick={findLocation}>Try Again</Button>
@@ -145,7 +145,7 @@ export function CurrentLocationAqi() {
   const { category, color } = getAqiInfo(location.aqi);
 
   return (
-    <Card className="shadow-lg">
+    <Card className="shadow-lg backdrop-blur-xl transition-all duration-300 hover:scale-[1.03] hover:shadow-lg hover:shadow-primary/20 border-primary/20 hover:border-primary/50">
       <CardHeader>
         <CardTitle className="flex items-center gap-2 text-base md:text-xl">
             <MapPin className="h-5 w-5 text-primary"/>

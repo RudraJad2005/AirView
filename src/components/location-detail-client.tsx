@@ -78,7 +78,7 @@ export function LocationDetailClient({ location }: LocationDetailClientProps) {
           </div>
       </div>
 
-       <Card>
+       <Card className="backdrop-blur-xl transition-all duration-300 hover:scale-[1.03] hover:shadow-lg hover:shadow-primary/20 border-primary/20 hover:border-primary/50">
         <CardHeader>
           <CardTitle>Data Overview</CardTitle>
           <CardDescription>
@@ -122,7 +122,7 @@ export function LocationDetailClient({ location }: LocationDetailClientProps) {
                   {location.historical.map((h, index) => {
                      const { textColor: historicalTextColor } = getAqiInfo(h.aqi);
                      return (
-                        <TableRow key={index}>
+                        <TableRow key={index} className="hover:bg-muted/80">
                             <TableCell className="font-medium">{h.date}</TableCell>
                             <TableCell className={cn("text-right font-bold", historicalTextColor)}>{h.aqi}</TableCell>
                         </TableRow>
@@ -138,7 +138,7 @@ export function LocationDetailClient({ location }: LocationDetailClientProps) {
 
       {isLoading && (
         <div className="grid gap-6 md:gap-8">
-            <Card>
+            <Card className="backdrop-blur-xl">
                 <CardHeader>
                     <Skeleton className="h-6 w-1/2" />
                     <Skeleton className="h-4 w-3/4" />
@@ -151,7 +151,7 @@ export function LocationDetailClient({ location }: LocationDetailClientProps) {
                     </div>
                 </CardContent>
             </Card>
-            <Card>
+            <Card className="backdrop-blur-xl">
                 <CardHeader>
                     <Skeleton className="h-6 w-1/2" />
                     <Skeleton className="h-4 w-3/4" />
@@ -166,7 +166,7 @@ export function LocationDetailClient({ location }: LocationDetailClientProps) {
       )}
 
       {predictions && (
-        <Card>
+        <Card className="backdrop-blur-xl transition-all duration-300 hover:scale-[1.03] hover:shadow-lg hover:shadow-primary/20 border-primary/20 hover:border-primary/50">
           <CardHeader>
             <CardTitle className="flex items-center gap-2"><CalendarDays className="h-5 w-5"/>3-Day Forecast</CardTitle>
             <CardDescription>
@@ -188,7 +188,7 @@ export function LocationDetailClient({ location }: LocationDetailClientProps) {
                   {predictions.predictions.map((prediction, index) => {
                     const { category: predCategory, color: predColor } = getAqiInfo(prediction.predictedAqi);
                     return (
-                      <TableRow key={index}>
+                      <TableRow key={index} className="hover:bg-muted/80">
                         <TableCell className="font-medium">{prediction.day}</TableCell>
                         <TableCell className="text-center">
                           <div className="flex flex-col items-center gap-1">
@@ -226,7 +226,7 @@ export function LocationDetailClient({ location }: LocationDetailClientProps) {
       )}
 
       {guidance && (
-        <Card>
+        <Card className="backdrop-blur-xl transition-all duration-300 hover:scale-[1.03] hover:shadow-lg hover:shadow-primary/20 border-primary/20 hover:border-primary/50">
             <CardHeader>
                 <CardTitle>Health & Safety Guidance for {location.state}</CardTitle>
                 <CardDescription>AI-generated recommendations to help you stay safe and reduce pollution.</CardDescription>

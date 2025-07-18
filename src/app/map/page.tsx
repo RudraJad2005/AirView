@@ -22,7 +22,7 @@ export default function MapPage() {
       </div>
       {/* Adding a stable key to the wrapper div helps React manage the component's lifecycle more predictably,
           which can prevent the re-initialization error, especially during development. */}
-      <div key="map-wrapper" className="rounded-lg overflow-hidden shadow-lg h-[calc(100vh-200px)]">
+      <div key="map-wrapper" className="rounded-lg overflow-hidden shadow-lg h-[calc(100vh-200px)] backdrop-blur-xl transition-all duration-300 hover:scale-[1.03] hover:shadow-lg hover:shadow-primary/20 border-primary/20 hover:border-primary/50">
         <MapClient />
       </div>
     </div>

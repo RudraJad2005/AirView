@@ -1,3 +1,4 @@
+
 import { AnalyticsClient } from '@/components/dashboard/analytics-client';
 import { getLocationsData } from '@/lib/data';
 

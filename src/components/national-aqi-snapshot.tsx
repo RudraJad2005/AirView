@@ -31,7 +31,7 @@ export function NationalAqiSnapshot() {
     .reverse(); // reverse for correct order in horizontal chart
 
   return (
-    <Card>
+    <Card className="backdrop-blur-xl transition-all duration-300 hover:scale-[1.03] hover:shadow-lg hover:shadow-primary/20 border-primary/20 hover:border-primary/50">
       <CardHeader>
         <CardTitle>Top 10 Highest AQI Cities</CardTitle>
         <CardDescription>
@@ -53,7 +53,7 @@ export function NationalAqiSnapshot() {
                   type="category"
                   tickLine={false}
                   axisLine={false}
-                  tick={{ fontSize: 12 }}
+                  tick={{ fontSize: 12, fill: 'hsl(var(--muted-foreground))' }}
                   width={80}
                 />
                 <Tooltip
