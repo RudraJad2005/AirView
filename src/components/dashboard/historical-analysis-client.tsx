@@ -8,7 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Button } from '@/components/ui/button';
 import { ArrowLeft, LineChart as LineChartIcon, BarChart3, Table as TableIcon, ArrowUp, ArrowDown, Thermometer } from 'lucide-react';
 import Link from 'next/link';
-import { CartesianGrid, Line, LineChart, XAxis, YAxis, Legend, Tooltip } from 'recharts';
+import { Area, AreaChart, CartesianGrid, Legend, Tooltip, XAxis, YAxis } from 'recharts';
 import { ChartContainer, ChartTooltipContent, type ChartConfig } from '@/components/ui/chart';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 
@@ -106,7 +106,7 @@ export function HistoricalAnalysisClient({ locations }: HistoricalAnalysisClient
             styles={{
                 control: (base) => ({
                     ...base,
-                    background: 'hsl(var(--background))',
+                    background: 'hsl(var(--card))',
                     borderColor: 'hsl(var(--input))'
                 }),
                 menu: (base) => ({
@@ -116,7 +116,7 @@ export function HistoricalAnalysisClient({ locations }: HistoricalAnalysisClient
                 }),
                 option: (base, state) => ({
                     ...base,
-                    background: state.isFocused ? 'hsl(var(--accent))' : 'hsl(var(--background))',
+                    background: state.isFocused ? 'hsl(var(--accent))' : 'hsl(var(--card))',
                     color: 'hsl(var(--foreground))',
                 }),
                 multiValue: (base) => ({
@@ -175,22 +175,38 @@ export function HistoricalAnalysisClient({ locations }: HistoricalAnalysisClient
       <Card className="backdrop-blur-xl transition-all duration-300 hover:scale-[1.03] hover:shadow-lg hover:shadow-primary/20 border-primary/20 hover:border-primary/50">
         <CardHeader>
           <CardTitle className="flex items-center gap-2"><LineChartIcon className="h-5 w-5" />AQI Trend Comparison</CardTitle>
-          <CardDescription>Line chart showing the daily AQI fluctuations for the selected cities.</CardDescription>
+          <CardDescription>Area chart showing the daily AQI fluctuations for the selected cities.</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="h-[400px] w-full pt-4">
             {selectedLocations.length > 0 ? (
               <ChartContainer config={chartConfig} className="h-full w-full">
-                <LineChart data={chartData} margin={{ left: -10, right: 20 }}>
+                <AreaChart data={chartData} margin={{ left: -10, right: 20 }}>
+                  <defs>
+                    {Object.keys(chartConfig).map(city => (
+                      <linearGradient key={`color-${city}`} id={`color-${city}`} x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="5%" stopColor={chartConfig[city].color} stopOpacity={0.8}/>
+                          <stop offset="95%" stopColor={chartConfig[city].color} stopOpacity={0.1}/>
+                      </linearGradient>
+                    ))}
+                  </defs>
                   <CartesianGrid vertical={false} stroke="hsl(var(--muted))" strokeDasharray="3 3"/>
                   <XAxis dataKey="date" tickLine={false} axisLine={false} tickMargin={8} stroke="hsl(var(--muted-foreground))" fontSize={12} />
                   <YAxis tickLine={false} axisLine={false} tickMargin={8} tickFormatter={(value) => `${value}`} stroke="hsl(var(--muted-foreground))" fontSize={12} />
                   <Tooltip content={<ChartTooltipContent indicator="line" />} cursor={{ stroke: "hsl(var(--primary))", strokeWidth: 1.5 }} />
                   <Legend />
                   {Object.keys(chartConfig).map(city => (
-                    <Line key={city} dataKey={city} type="monotone" stroke={`var(--color-${city})`} strokeWidth={2} dot={false} />
+                     <Area 
+                        key={city} 
+                        dataKey={city} 
+                        type="monotone" 
+                        stroke={chartConfig[city].color}
+                        fill={`url(#color-${city})`}
+                        strokeWidth={2} 
+                        dot={false} 
+                      />
                   ))}
-                </LineChart>
+                </AreaChart>
               </ChartContainer>
             ) : (
               <div className="flex h-full w-full items-center justify-center rounded-lg border border-dashed bg-muted/50">
@@ -233,3 +249,5 @@ export function HistoricalAnalysisClient({ locations }: HistoricalAnalysisClient
     </div>
   );
 }
+
+    
