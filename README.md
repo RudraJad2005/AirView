@@ -1,4 +1,5 @@
-# BreatheEasy India
+# AirView
+India
 
 This is a Next.js web application for monitoring air quality in India, built in Firebase Studio. It features real-time AQI data, AI-powered forecasts, and personalized health advice.
 
