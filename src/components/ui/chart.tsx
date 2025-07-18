@@ -176,12 +176,16 @@ const ChartTooltipContent = React.forwardRef<
 
     const nestLabel = payload.length === 1 && indicator !== "dot"
 
-    // Pie chart tooltip
-    if (payload[0]?.dataKey === "aqi") {
+    const isPieChart = payload[0].payload?.name && payload[0].payload?.value !== undefined;
+
+    if (isPieChart) {
         const item = payload[0];
-        const city = item.payload.city;
-        const aqiValue = item.value;
+        const name = item.name;
+        const value = item.value;
         const indicatorColor = item.payload.fill;
+        const itemConfig = getPayloadConfigFromPayload(config, item, name || 'value');
+        const label = itemConfig?.label || name;
+
         return (
             <div
                 ref={ref}
@@ -196,8 +200,8 @@ const ChartTooltipContent = React.forwardRef<
                         style={{ backgroundColor: indicatorColor }}
                     />
                     <div className="flex flex-1 justify-between">
-                        <span className="text-muted-foreground">{city}</span>
-                        <span className="font-mono font-medium tabular-nums text-foreground">{aqiValue}</span>
+                        <span className="text-muted-foreground">{label}</span>
+                        <span className="font-mono font-medium tabular-nums text-foreground">{value}</span>
                     </div>
                 </div>
             </div>
