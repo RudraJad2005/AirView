@@ -13,7 +13,7 @@ body {
 
 @layer base {
   :root {
-    --background: 220 20% 96%;
+    --background: 220 15% 90%;
     --foreground: 222 84% 4.9%;
     
     --card: 255 100% 100% / 0.5;
