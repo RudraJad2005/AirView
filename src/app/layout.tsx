@@ -26,10 +26,14 @@ export default function RootLayout({
       <body className={`${inter.variable} font-body antialiased`}>
         <ThemeProvider
           attribute="class"
-          defaultTheme="system"
+          defaultTheme="dark"
           enableSystem
           disableTransitionOnChange
         >
+          <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden">
+            <div className="absolute left-1/2 top-1/2 size-[60rem] -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary/20 opacity-30 blur-[150px]" />
+          </div>
+
           <ErrorDialogProvider>
             <AuthProvider>
               <AppLoadingProvider>

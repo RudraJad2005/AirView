@@ -35,7 +35,7 @@ export default function DashboardPage() {
     <div className="flex-1 space-y-6">
       {/* Top Stat Cards */}
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-        <Card className="transition-all duration-300 hover:scale-[1.03] hover:shadow-lg hover:shadow-primary/20">
+        <Card className="backdrop-blur-xl transition-all duration-300 hover:scale-[1.03] hover:shadow-lg hover:shadow-primary/20">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium text-muted-foreground">Highest AQI Today</CardTitle>
             <div className="p-2 rounded-lg bg-gradient-to-tr from-primary to-primary/70">
@@ -49,7 +49,7 @@ export default function DashboardPage() {
             </p>
           </CardContent>
         </Card>
-        <Card className="transition-all duration-300 hover:scale-[1.03] hover:shadow-lg hover:shadow-primary/20">
+        <Card className="backdrop-blur-xl transition-all duration-300 hover:scale-[1.03] hover:shadow-lg hover:shadow-primary/20">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium text-muted-foreground">Lowest AQI Today</CardTitle>
              <div className="p-2 rounded-lg bg-gradient-to-tr from-primary to-primary/70">
@@ -63,7 +63,7 @@ export default function DashboardPage() {
             </p>
           </CardContent>
         </Card>
-        <Card className="transition-all duration-300 hover:scale-[1.03] hover:shadow-lg hover:shadow-primary/20">
+        <Card className="backdrop-blur-xl transition-all duration-300 hover:scale-[1.03] hover:shadow-lg hover:shadow-primary/20">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium text-muted-foreground">Average AQI</CardTitle>
             <div className="p-2 rounded-lg bg-gradient-to-tr from-primary to-primary/70">
@@ -77,7 +77,7 @@ export default function DashboardPage() {
             </p>
           </CardContent>
         </Card>
-        <Card className="transition-all duration-300 hover:scale-[1.03] hover:shadow-lg hover:shadow-primary/20">
+        <Card className="backdrop-blur-xl transition-all duration-300 hover:scale-[1.03] hover:shadow-lg hover:shadow-primary/20">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium text-muted-foreground">Monitored Locations</CardTitle>
             <div className="p-2 rounded-lg bg-gradient-to-tr from-primary to-primary/70">
@@ -97,7 +97,7 @@ export default function DashboardPage() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Left Column */}
         <div className="lg:col-span-2 space-y-6">
-          <Card className="relative overflow-hidden transition-all duration-300 hover:scale-[1.03] hover:shadow-lg hover:shadow-primary/20">
+          <Card className="backdrop-blur-xl relative overflow-hidden transition-all duration-300 hover:scale-[1.03] hover:shadow-lg hover:shadow-primary/20">
              <CardHeader>
                 <CardTitle>BreatheEasy India</CardTitle>
                 <CardDescription>Your personal air quality companion.</CardDescription>
@@ -114,7 +114,7 @@ export default function DashboardPage() {
                 className="absolute right-0 bottom-0 opacity-80"
              />
           </Card>
-          <Card className="transition-all duration-300 hover:scale-[1.03] hover:shadow-lg hover:shadow-primary/20">
+          <Card className="backdrop-blur-xl transition-all duration-300 hover:scale-[1.03] hover:shadow-lg hover:shadow-primary/20">
             <CardHeader>
               <CardTitle>Historical AQI Trend (Delhi)</CardTitle>
               <CardDescription>
@@ -129,7 +129,7 @@ export default function DashboardPage() {
 
         {/* Right Column */}
         <div className="lg:col-span-1 space-y-6">
-          <Card className="transition-all duration-300 hover:scale-[1.03] hover:shadow-lg hover:shadow-primary/20">
+          <Card className="backdrop-blur-xl transition-all duration-300 hover:scale-[1.03] hover:shadow-lg hover:shadow-primary/20">
             <CardHeader>
               <CardTitle>City AQI Comparison</CardTitle>
               <CardDescription>(+23) than last week average</CardDescription>
@@ -141,7 +141,7 @@ export default function DashboardPage() {
         </div>
       </div>
       
-       <Card className="transition-all duration-300 hover:scale-[1.03] hover:shadow-lg hover:shadow-primary/20">
+       <Card className="backdrop-blur-xl transition-all duration-300 hover:scale-[1.03] hover:shadow-lg hover:shadow-primary/20">
             <CardHeader className="flex flex-row items-center justify-between">
                 <div>
                     <CardTitle>City AQI Overview</CardTitle>
